@@ -1,0 +1,1399 @@
+category: Data Enrichment & Threat Intelligence
+commonfields:
+  id: SOCRadarThreatFusion
+  version: -1
+configuration:
+- additionalinfo: The API Key to use for connection
+  display: API Key
+  name: apikey
+  required: true
+  type: 4
+- display: Trust any certificate (not secure)
+  name: insecure
+  required: false
+  type: 8
+- display: Use system proxy settings
+  name: proxy
+  required: false
+  type: 8
+- additionalinfo: Reliability of the source providing the intelligence data.
+  defaultvalue: B - Usually reliable
+  display: Source Reliability
+  name: integrationReliability
+  options:
+  - A+ - 3rd party enrichment
+  - A - Completely reliable
+  - B - Usually reliable
+  - C - Fairly reliable
+  - D - Not usually reliable
+  - E - Unreliable
+  - F - Reliability cannot be judged
+  required: false
+  type: 15
+- defaultvalue: indicatorType
+  display: ""
+  name: feedExpirationPolicy
+  options:
+  - never
+  - interval
+  - indicatorType
+  - suddenDeath
+  required: false
+  type: 17
+- defaultvalue: "20160"
+  display: ""
+  name: feedExpirationInterval
+  required: false
+  type: 1
+contentitemexportablefields:
+  contentitemfields:
+    definitionid: ""
+    fromServerVersion: 6.0.0
+    itemVersion: 2.2.3
+    packID: SOCRadar
+    packName: SOCRadar
+    packPropagationLabels:
+    - all
+    prevname: ""
+    propagationLabels: []
+    toServerVersion: ""
+defaultclassifier: "null"
+description: Enrich indicators by obtaining enhanced information and reputation via
+  ThreatFusion of SOCRadar.
+detaileddescription: "### Partner Contributed Integration\n#### Integration Author:
+  SOCRadar Cyber Intelligence Inc.\nSupport and maintenance for this integration are
+  provided by the author. Please use the following contact details:\n- **Email**:
+  [xsoar@socradar.io](mailto:xsoar@socradar.io)\n- **URL**: [www.socradar.io](www.socradar.io)\n***\n##
+  SOCRadar ThreatFusion\nUse the SOCRadar ThreatFusion integration to enrich indicators
+  (ip, domain, hash) by obtaining enhanced information and reputation via SOCRadar.\n***\n###
+  How to obtain an API key\n\nTo obtain your SOCRadar ThreatFusion API key please
+  contact with the SOCRadar operation team via **operation@socradar.io** \n\nAfter
+  obtaining the SOCRadar ThreatFusion API key insert it into **API Key** field and
+  start using the SOCRadar ThreatFusion integration by creating the instance.\n\n###
+  Further Information\n\nFor further information please see [SOCRadar ThreatFusion
+  API](https://platform.socradar.com/docs/api/threat_analyze_api/) documentation.\n\n---\n[View
+  Integration Documentation](https://xsoar.pan.dev/docs/reference/integrations/soc-radar-threat-fusion)"
+display: SOCRadar ThreatFusion (Partner Contribution)
+image: data:image/png;base64,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
+name: SOCRadarThreatFusion
+script:
+  commands:
+  - arguments:
+    - default: true
+      description: IP entities to score. (IPv4 or IPv6).
+      isArray: true
+      name: ip
+      required: true
+    description: Scores provided IP entities' reputation in SOCRadar ThreatFusion.
+    name: ip
+    outputs:
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Risk Score
+      description: Reputation score of queried IP address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Score Details
+      description: Risk score details of queried IP address.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Total Encounters
+      description: Number of times that SOCRadar has encountered with the queried
+        IP address in its threat sources.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.IP
+      description: Queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn
+      description: ASN field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_cidr
+      description: ASN CIDR field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_country_code
+      description: ASN country code field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_date
+      description: ASN date field Whois information of queried IP address.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_description
+      description: ASN description field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_registry
+      description: ASN registry field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.address
+      description: Nets>address field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.cidr
+      description: Nets>CIDR field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.city
+      description: Nets>city field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.country
+      description: Nets>country field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.created
+      description: Nets>created field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.description
+      description: Nets>description field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.emails
+      description: Nets>emails field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.handle
+      description: Nets>handle field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.name
+      description: Nets>name field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.postal_code
+      description: Nets>postal code field Whois information of queried IP address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.range
+      description: Nets>range field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.state
+      description: Nets>state field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.updated
+      description: Nets>updated field Whois information of queried IP address.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nir
+      description: NIR field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.query
+      description: Query field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.raw_referral
+      description: Raw referral field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.referral
+      description: Referral field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.DNS Details
+      description: DNS information of queried IP address.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.ASN
+      description: ASN field Geographical location information of queried IP address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.AsnCode
+      description: ASN code field Geographical location information of queried IP
+        address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.AsnName
+      description: ASN name field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Cidr
+      description: CIDR field Geographical location information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.CityName
+      description: City name field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.CountryCode
+      description: Country code field Geographical location information of queried
+        IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.CountryName
+      description: Country name field Geographical location information of queried
+        IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Latitude
+      description: Latitude field Geographical location information of queried IP
+        address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Longitude
+      description: Longitude field Geographical location information of queried IP
+        address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.RegionName
+      description: Region name field Geographical location information of queried
+        IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Timezone
+      description: Timezone field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.ZipCode
+      description: Zip code field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: DBotScore.Indicator
+      description: The indicator that was tested.
+      type: String
+    - contextPath: DBotScore.Score
+      description: The actual score.
+      type: Number
+    - contextPath: DBotScore.Type
+      description: The indicator type.
+      type: String
+    - contextPath: DBotScore.Vendor
+      description: The vendor used to calculate the score.
+      type: String
+    - contextPath: IP.Address
+      description: IP address.
+      type: String
+    - contextPath: IP.ASN
+      description: 'The autonomous system name for the IP address, for example: "AS8948".'
+      type: String
+    - contextPath: IP.Geo.Location
+      description: 'The geolocation where the IP address is located, in the format:
+        latitude:longitude.'
+      type: String
+    - contextPath: IP.Geo.Country
+      description: The country in which the IP address is located.
+      type: String
+  - arguments:
+    - default: true
+      description: Domain entities to score.
+      isArray: true
+      name: domain
+      required: true
+    description: Scores provided domain entities' reputation in SOCRadar ThreatFusion.
+    name: domain
+    outputs:
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Risk Score
+      description: Reputation score of queried domain.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Score Details
+      description: Risk score details of queried domain.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Total Encounters
+      description: Number of times that SOCRadar has encountered with the queried
+        domain in its threat sources.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Domain
+      description: Queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.org
+      description: Org field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.city
+      description: City field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.name
+      description: Name field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.state
+      description: State field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.dnssec
+      description: Dnssec field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.emails
+      description: Emails field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.status
+      description: Status field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.address
+      description: Address field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.country
+      description: Country field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.zipcode
+      description: Zip code field Whois information of queried domain.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.registrar
+      description: Registrar field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.domain_name
+      description: Domain name field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.name_servers
+      description: Name servers field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.referral_url
+      description: Referral URL field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.updated_date
+      description: Updated date field Whois information of queried domain.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.whois_server
+      description: Whois server field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.creation_date
+      description: Creation date field Whois information of queried domain.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.expiration_date
+      description: Expiration date field Whois information of queried domain.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.DNS Details
+      description: DNS information of queried domain.
+      type: String
+    - contextPath: DBotScore.Indicator
+      description: The indicator that was tested.
+      type: String
+    - contextPath: DBotScore.Score
+      description: The actual score.
+      type: Number
+    - contextPath: DBotScore.Type
+      description: The indicator type.
+      type: String
+    - contextPath: DBotScore.Vendor
+      description: The vendor used to calculate the score.
+      type: String
+    - contextPath: Domain.Name
+      description: 'The domain name, for example: "google.com".'
+      type: String
+    - contextPath: Domain.DNS
+      description: A list of IP objects resolved by DNS.
+      type: String
+    - contextPath: Domain.CreationDate
+      description: The date that the domain was created.
+      type: Date
+    - contextPath: Domain.UpdatedDate
+      description: The date that the domain was last updated.
+      type: String
+    - contextPath: Domain.ExpirationDate
+      description: The expiration date of the domain.
+      type: Date
+    - contextPath: Domain.NameServers
+      description: (List<String>) Name servers of the domain.
+      type: Unknown
+    - contextPath: Domain.Organization
+      description: The organization of the domain.
+      type: String
+    - contextPath: Domain.Registrant.Name
+      description: The name of the registrant.
+      type: String
+    - contextPath: Domain.WHOIS.CreationDate
+      description: The date that the domain was created.
+      type: Date
+    - contextPath: Domain.WHOIS.UpdatedDate
+      description: The date that the domain was last updated.
+      type: Date
+    - contextPath: Domain.WHOIS.ExpirationDate
+      description: The expiration date of the domain.
+      type: Date
+    - contextPath: Domain.WHOIS.NameServers
+      description: (List<String>) Name servers of the domain.
+      type: String
+    - contextPath: Domain.WHOIS.Registrant.Name
+      description: The name of the registrant.
+      type: String
+    - contextPath: Domain.WHOIS.Registrar.Name
+      description: 'The name of the registrar, for example: "GoDaddy".'
+      type: String
+    - contextPath: Domain.Geo.Country
+      description: The country in which the domain address is located.
+      type: String
+    - contextPath: Domain.Subdomains
+      description: (List<String>) Subdomains of the domain.
+      type: Unknown
+    - contextPath: Domain.Registrant.Country
+      description: The country of the registrant.
+      type: String
+  - arguments:
+    - default: true
+      description: Hash entities to score. (MD5 or SHA1).
+      isArray: true
+      name: file
+      required: true
+    description: Scores provided hash entities' reputation in SOCRadar ThreatFusion.
+    name: file
+    outputs:
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.Risk Score
+      description: Reputation score of queried hash.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.Score Details
+      description: Risk score details of queried hash.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.Total Encounters
+      description: Number of times that SOCRadar has encountered with the queried
+        hash in its threat sources.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.File
+      description: Queried hash.
+      type: String
+    - contextPath: DBotScore.Indicator
+      description: The indicator that was tested.
+      type: String
+    - contextPath: DBotScore.Score
+      description: The actual score.
+      type: Number
+    - contextPath: DBotScore.Type
+      description: The indicator type.
+      type: String
+    - contextPath: DBotScore.Vendor
+      description: The vendor used to calculate the score.
+      type: String
+    - contextPath: File.MD5
+      description: The MD5 hash of the file.
+      type: String
+    - contextPath: File.SHA1
+      description: The SHA1 hash of the file.
+      type: String
+  - arguments:
+    - description: IP entity to score. (IPv4 or IPv6).
+      name: ip
+      required: true
+    description: Scores provided IP entity's reputation in SOCRadar ThreatFusion.
+    name: socradar-score-ip
+    outputs:
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Risk Score
+      description: Reputation score of queried IP address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Score Details
+      description: Risk score details of queried IP address.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Total Encounters
+      description: Number of times that SOCRadar has encountered with the queried
+        IP address in its threat sources.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.IP
+      description: Queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn
+      description: ASN field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_cidr
+      description: ASN CIDR field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_country_code
+      description: ASN country code field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_date
+      description: ASN date field Whois information of queried IP address.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_description
+      description: ASN description field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.asn_registry
+      description: ASN registry field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.address
+      description: Nets>address field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.cidr
+      description: Nets>CIDR field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.city
+      description: Nets>city field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.country
+      description: Nets>country field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.created
+      description: Nets>created field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.description
+      description: Nets>description field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.emails
+      description: Nets>emails field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.handle
+      description: Nets>handle field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.name
+      description: Nets>name field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.postal_code
+      description: Nets>postal code field Whois information of queried IP address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.range
+      description: Nets>range field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.state
+      description: Nets>state field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nets.updated
+      description: Nets>updated field Whois information of queried IP address.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.nir
+      description: NIR field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.query
+      description: Query field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.raw_referral
+      description: Raw referral field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Whois Details.referral
+      description: Referral field Whois information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.DNS Details
+      description: DNS information of queried IP address.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.ASN
+      description: ASN field Geographical location information of queried IP address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.AsnCode
+      description: ASN code field Geographical location information of queried IP
+        address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.AsnName
+      description: ASN name field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Cidr
+      description: CIDR field Geographical location information of queried IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.CityName
+      description: City name field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.CountryCode
+      description: Country code field Geographical location information of queried
+        IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.CountryName
+      description: Country name field Geographical location information of queried
+        IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Latitude
+      description: Latitude field Geographical location information of queried IP
+        address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Longitude
+      description: Longitude field Geographical location information of queried IP
+        address.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.RegionName
+      description: Region name field Geographical location information of queried
+        IP address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.Timezone
+      description: Timezone field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Geo Location.ZipCode
+      description: Zip code field Geographical location information of queried IP
+        address.
+      type: String
+    - contextPath: DBotScore.Indicator
+      description: The indicator that was tested.
+      type: String
+    - contextPath: DBotScore.Score
+      description: The actual score.
+      type: Number
+    - contextPath: DBotScore.Type
+      description: The indicator type.
+      type: String
+    - contextPath: DBotScore.Vendor
+      description: The vendor used to calculate the indicator score.
+      type: String
+  - arguments:
+    - description: Domain entity to score.
+      name: domain
+      required: true
+    description: Scores provided domain entity's reputation in SOCRadar ThreatFusion.
+    name: socradar-score-domain
+    outputs:
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Risk Score
+      description: Reputation score of queried domain.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.IP.Score Details
+      description: Risk score details of queried domain.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Total Encounters
+      description: Number of times that SOCRadar has encountered with the queried
+        domain in its threat sources.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Domain
+      description: Queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.org
+      description: Org field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.city
+      description: City field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.name
+      description: Name field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.state
+      description: State field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.dnssec
+      description: Dnssec field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.emails
+      description: Emails field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.status
+      description: Status field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.address
+      description: Address field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.country
+      description: Country field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.zipcode
+      description: Zip code field Whois information of queried domain.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.registrar
+      description: Registrar field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.domain_name
+      description: Domain name field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.name_servers
+      description: Name servers field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.referral_url
+      description: Referral URL field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.updated_date
+      description: Updated date field Whois information of queried domain.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.whois_server
+      description: Whois server field Whois information of queried domain.
+      type: String
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.creation_date
+      description: Creation date field Whois information of queried domain.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.Whois Details.expiration_date
+      description: Expiration date field Whois information of queried domain.
+      type: Date
+    - contextPath: SOCRadarThreatFusion.Reputation.Domain.DNS Details
+      description: DNS information of queried domain.
+      type: String
+    - contextPath: DBotScore.Indicator
+      description: The indicator that was tested.
+      type: String
+    - contextPath: DBotScore.Score
+      description: The actual score.
+      type: Number
+    - contextPath: DBotScore.Type
+      description: The indicator type.
+      type: String
+    - contextPath: DBotScore.Vendor
+      description: The vendor used to calculate the indicator score.
+      type: String
+  - arguments:
+    - description: Hash entity to score. (MD5 or SHA1).
+      name: hash
+      required: true
+    description: Scores provided hash entity's reputation in SOCRadar ThreatFusion.
+    name: socradar-score-hash
+    outputs:
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.Risk Score
+      description: Reputation score of queried hash.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.Score Details
+      description: Risk score details of queried hash.
+      type: JSON
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.Total Encounters
+      description: Number of times that SOCRadar has encountered with the queried
+        hash in its threat sources.
+      type: Number
+    - contextPath: SOCRadarThreatFusion.Reputation.Hash.File
+      description: Queried hash.
+      type: String
+    - contextPath: DBotScore.Indicator
+      description: The indicator that was tested.
+      type: String
+    - contextPath: DBotScore.Score
+      description: The actual score.
+      type: Number
+    - contextPath: DBotScore.Type
+      description: The indicator type.
+      type: String
+    - contextPath: DBotScore.Vendor
+      description: The vendor used to calculate the indicator score.
+      type: String
+  dockerimage: demisto/python3:3.12.8.3296088
+  runonce: false
+  script: |
+    register_module_line('SOCRadarThreatFusion', 'start', __line__())
+    CONSTANT_PACK_VERSION = '2.2.3'
+    demisto.debug('pack id = SOCRadar, pack version = 2.2.3')
+
+
+    from json.decoder import JSONDecodeError
+
+
+
+    import urllib3
+    import traceback
+    from typing import Any
+
+    # Disable insecure warnings
+    urllib3.disable_warnings()  # pylint: disable=no-member
+
+
+    """ CONSTANTS """
+
+    SOCRADAR_API_ENDPOINT = "https://platform.socradar.com/api"
+    MESSAGES: dict[str, str] = {
+        "BAD_REQUEST_ERROR": "An error occurred while fetching the data.",
+        "AUTHORIZATION_ERROR": "Authorization Error: make sure API Key is correctly set.",
+        "RATE_LIMIT_EXCEED_ERROR": "Rate limit has been exceeded. Please make sure your your API key's rate limit is adequate.",
+    }
+    INTEGRATION_NAME = "SOCRadar ThreatFusion"
+
+    """ CLIENT CLASS """
+
+
+    class Client(BaseClient):
+        """
+        Client class to interact with the SOCRadar API
+        """
+
+        def __init__(self, base_url, api_key, verify, proxy):
+            super().__init__(base_url, verify=verify, proxy=proxy)
+            self.api_key = api_key
+
+        def get_entity_score(self, entity):
+            suffix = "/threat/analysis"
+            api_params = {"key": self.api_key, "entity": entity}
+            response = self._http_request(
+                method="GET", url_suffix=suffix, params=api_params, timeout=60, error_handler=self.handle_error_response
+            )
+            return response
+
+        def check_auth(self):
+            suffix = "/threat/analysis/check/auth"
+            api_params = {"key": self.api_key}
+            response = self._http_request(
+                method="GET", url_suffix=suffix, params=api_params, error_handler=self.handle_error_response
+            )
+
+            return response
+
+        @staticmethod
+        def handle_error_response(response) -> None:
+            """Handles API response to display descriptive error messages based on status code
+
+            :param response: SOCRadar API response.
+            :return: DemistoException for particular error code.
+            """
+
+            error_reason = ""
+            try:
+                json_resp = response.json()
+                error_reason = json_resp.get("error") or json_resp.get("message")
+            except JSONDecodeError:
+                pass
+
+            status_code_messages = {
+                400: f"{MESSAGES['BAD_REQUEST_ERROR']} Reason: {error_reason}",
+                401: MESSAGES["AUTHORIZATION_ERROR"],
+                404: f"{MESSAGES['BAD_REQUEST_ERROR']} Reason: {error_reason}",
+                429: MESSAGES["RATE_LIMIT_EXCEED_ERROR"],
+            }
+
+            if response.status_code in status_code_messages:
+                demisto.debug(f"Response Code: {response.status_code}, Reason: {status_code_messages[response.status_code]}")
+                raise DemistoException(status_code_messages[response.status_code])
+            else:
+                raise DemistoException(response.raise_for_status())
+
+
+    """ HELPER FUNCTIONS """
+
+
+    def calculate_dbot_score(score: int) -> int:
+        """Transforms cyber risk score (reputation) from SOCRadar API to DBot Score and using threshold.
+
+        Args:
+            score: Cyber risk score (reputation) from SOCRadar API
+
+        Returns:
+            Score representation in DBot
+        """
+        return_score = 0
+        # Malicious
+        if score > 800:
+            return_score = 3
+        # Suspicious
+        elif score > 400:
+            return_score = 2
+        # Good
+        elif score > 0:
+            return_score = 1
+        # Unknown
+        return return_score
+
+
+    class Validator:
+        @staticmethod
+        def validate_domain(domain_to_validate):
+            if not isinstance(domain_to_validate, str) or len(domain_to_validate) > 255:
+                return False
+            if domain_to_validate.endswith("."):
+                domain_to_validate = domain_to_validate[:-1]
+            domain_regex = re.compile(r"(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+            return all(domain_regex.match(x) for x in domain_to_validate.split("."))
+
+        @staticmethod
+        def validate_ipv4(ip_to_validate):
+            return is_ip_valid(ip_to_validate)
+
+        @staticmethod
+        def validate_ipv6(ip_to_validate):
+            return is_ipv6_valid(ip_to_validate)
+
+        @staticmethod
+        def validate_hash(hash_to_validate):
+            return get_hash_type(hash_to_validate) != "Unknown"
+
+        @staticmethod
+        def raise_if_ip_not_valid(ip: str):
+            """Raises an error if ip is not valid
+
+            Args:
+                ip: ip
+
+            Raises:
+                ValueError: if ip is not type of ipv4 or ipv6
+
+            Examples:
+                >>> Validator.raise_if_ip_not_valid('not an ip')
+                Traceback (most recent call last):
+                 ...
+                ValueError: IP "not an ip" is not a type of IPv4 or IPv6
+                >>> Validator.raise_if_ip_not_valid('1.1.1.1')
+            """
+            if not Validator.validate_ipv4(ip) and not Validator.validate_ipv6(ip):
+                raise ValueError(f'IP "{ip}" is not a type of IPv4 or IPv6')
+
+        @staticmethod
+        def raise_if_domain_not_valid(domain: str):
+            """Raises an error if domain is not valid
+
+            Args:
+                domain: domain
+
+            Raises:
+                ValueError: if domain is not a valid domain address
+
+            Examples:
+                >>> Validator.raise_if_domain_not_valid('not a domain')
+                Traceback (most recent call last):
+                 ...
+                ValueError: Domain "not a domain" is not a valid domain address
+                >>> Validator.raise_if_hash_not_valid('not a domain')
+            """
+            if not Validator.validate_domain(domain):
+                raise ValueError(f'Domain "{domain}" is not a valid domain address')
+
+        @staticmethod
+        def raise_if_hash_not_valid(file_hash: str):
+            """Raises an error if file_hash is not valid
+
+            Args:
+                file_hash: file hash
+
+            Raises:
+                ValueError: if hash is not of type SHA-1 or MD5
+
+            Examples:
+                >>> Validator.raise_if_hash_not_valid('not a hash')
+                Traceback (most recent call last):
+                 ...
+                ValueError: Hash "not a hash" is not of type SHA-1 or MD5
+                >>> Validator.raise_if_hash_not_valid('7e641f6b9706d860baf09fe418b6cc87')
+            """
+            if not Validator.validate_hash(file_hash):
+                raise ValueError(f'Hash "{file_hash}" is not of type SHA-1 or MD5')
+
+
+    def verify_entity_type(entity_to_control_list: list, entity_type: str):
+        """Verify intended entity type. Raise exception if the provided entity type is not expected.
+
+        :type entity_to_control_list: ``list``
+        :param entity_to_control_list: Intended entity list to be verified.
+
+        :type entity_type: ``str``
+        :param entity_type: Intended entity type to be verified.
+        """
+        control_dict = {
+            "ip": Validator.raise_if_ip_not_valid,
+            "domain": Validator.raise_if_domain_not_valid,
+            "hash": Validator.raise_if_hash_not_valid,
+        }
+        for entity_to_control in entity_to_control_list:
+            control_dict[entity_type](entity_to_control)
+
+
+    def map_indicator_type(socradar_indicator_type: str) -> Optional[str]:
+        """Map SOCRadar indicator type to XSOAR indicator type
+
+        :type socradar_indicator_type: ``str``
+        :param socradar_indicator_type: The SOCRadar indicator type
+
+        :return: XSOAR indicator type
+        :rtype: ``Optional[str]``
+        """
+        indicator_map = {
+            "ipv4": FeedIndicatorType.IP,
+            "ipv6": FeedIndicatorType.IPv6,
+            "hash": FeedIndicatorType.File,
+            "hostname": FeedIndicatorType.Domain,
+        }
+
+        return indicator_map.get(socradar_indicator_type)
+
+
+    def build_entry_context(results: Union[dict, List], indicator_type: str):
+        """Formatting results from SOCRadar API to Demisto Context
+
+        :type results: ``Union[Dict, List]``
+        :param results: Raw results obtained from SOCRadar API.
+
+        :type indicator_type: ``str``
+        :param results: Type of indicator to be used in context creation.
+        """
+
+        if isinstance(results, list):
+            return [build_entry_context(entry, indicator_type) for entry in results]  # pragma: no cover
+
+        result_data = results.get("data", {})
+        return_context = {
+            "Risk Score (Out of 100)": result_data.get("score"),
+            "Score Details": result_data.get("score_details"),
+            "Total Encounters": len(result_data.get("findings", [])),
+            map_indicator_type(result_data.get("classification")): result_data.get("value"),
+        }
+
+        if indicator_type == "domain":
+            return_context["Subdomains"] = result_data.get("subdomains", [])
+
+        if indicator_type != "hash":
+            return_context["Whois Details"] = {}
+            for key, value in result_data.get("whois", {}).items():
+                # Exclude raw whois
+                if key == "raw":
+                    continue
+                if value and type(value) is list and key in ("creation_date", "expiration_date", "updated_date", "registrar"):
+                    value = value[0]
+                return_context["Whois Details"][key] = value
+            return_context["DNS Details"] = result_data.get("dns_info", {})
+
+        if indicator_type == "ip":
+            geo_location_dict = {}
+            if result_data.get("geo_location", []):
+                geo_location = result_data["geo_location"][0]
+                geo_location_dict = {key: value for key, value in geo_location.items() if key.lower() != "ip"}
+
+            asn_code = result_data.get("whois", {}).get("asn", "")
+            if not asn_code:
+                asn_code = geo_location_dict.get("AsnCode", "")
+            asn_description = result_data.get("whois", {}).get("asn_description", "")
+            if not asn_description:
+                asn_description = geo_location_dict.get("AsnName", "")
+            asn = f"[{asn_code}] {asn_description}"
+            geo_location_dict["ASN"] = asn
+            return_context["Geo Location"] = geo_location_dict
+
+        return return_context
+
+
+    """ COMMAND FUNCTIONS """
+
+
+    def test_module(client: Client) -> str:
+        """Tests API connectivity and authentication'
+
+        Returning 'ok' indicates that the integration works like it is supposed to.
+        Connection to the service is successful.
+        Raises exceptions if something goes wrong.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :return: 'ok' if test passed, anything else will fail the test.
+        :rtype: ``str``
+        """
+        client.check_auth()
+        return "ok"
+
+
+    def ip_command(client: Client, args: dict[str, Any]) -> List[CommandResults]:
+        """Returns SOCRadar reputation details for the given IP entities.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :type args: Dict[str, Any]
+        :param args: contains all arguments for ip_command
+
+        :return:
+            List of ``CommandResults`` objects that is then passed to ``return_results``
+        :rtype: ``List[CommandResults]``
+        """
+
+        ip_addresses = args.get("ip", "")
+        ip_list: list = argToList(ip_addresses)
+        verify_entity_type(ip_list, "ip")
+
+        command_results_list: List[CommandResults] = []
+
+        for ip_to_score in ip_list:
+            raw_response = client.get_entity_score(ip_to_score)
+
+            if raw_response.get("is_success"):
+                if raw_response.get("data", {}).get("is_whitelisted"):
+                    score = 1
+                elif (score := raw_response.get("data", {}).get("score", 0)) is not None:
+                    score = calculate_dbot_score(score)
+                title = f"SOCRadar - Analysis results for IP: {ip_to_score}"
+
+                context_entry = build_entry_context(raw_response, "ip")
+                human_readable = tableToMarkdown(title, context_entry)
+
+                dbot_score = Common.DBotScore(
+                    indicator=ip_to_score,
+                    indicator_type=DBotScoreType.IP,
+                    integration_name=INTEGRATION_NAME,
+                    score=score,
+                    reliability=demisto.params().get("integrationReliability"),
+                )
+
+                ip_object = Common.IP(
+                    ip=ip_to_score,
+                    dbot_score=dbot_score,
+                    asn=context_entry["Geo Location"].get("ASN"),
+                    geo_country=context_entry["Geo Location"].get("CountryCode"),
+                    geo_latitude=context_entry["Geo Location"].get("Latitude"),
+                    geo_longitude=context_entry["Geo Location"].get("Longitude"),
+                    region=context_entry["Geo Location"].get("RegionName"),
+                )
+
+                command_results_list.append(
+                    CommandResults(
+                        outputs_prefix="SOCRadarThreatFusion.Reputation.IP",
+                        outputs_key_field="IP",
+                        readable_output=human_readable,
+                        raw_response=raw_response,
+                        outputs=context_entry,
+                        indicator=ip_object,
+                    )
+                )
+            else:
+                message = (
+                    f"Error at scoring IP {ip_to_score} while getting API response. "
+                    f"SOCRadar ThreatFusion API Response: {raw_response.get('message', '')}"
+                )
+                command_results_list.append(CommandResults(readable_output=message))
+        if not command_results_list:
+            command_results_list = [CommandResults("SOCRadar ThreatFusion could not find any results for the given IP address(es).")]
+        return command_results_list
+
+
+    def domain_command(client: Client, args: dict[str, Any]) -> List[CommandResults]:
+        """Returns SOCRadar reputation details for the given domain entities.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :type args: Dict[str, Any]
+        :param args: contains all arguments for domain_command
+
+        :return:
+            List of ``CommandResults`` objects that is then passed to ``return_results``
+        :rtype: ``List[CommandResults]``
+        """
+        domains = args.get("domain", "")
+        domains_list: list = argToList(domains)
+        verify_entity_type(domains_list, "domain")
+
+        command_results_list: List[CommandResults] = []
+
+        for domain_to_score in domains_list:
+            raw_response = client.get_entity_score(domain_to_score)
+
+            if raw_response.get("is_success"):
+                if raw_response.get("data", {}).get("is_whitelisted"):
+                    score = 1
+                elif (score := raw_response.get("data", {}).get("score", 0)) is not None:
+                    score = calculate_dbot_score(score)
+                title = f"SOCRadar - Analysis results for domain: {domain_to_score}"
+
+                context_entry = build_entry_context(raw_response, "domain")
+                human_readable = tableToMarkdown(title, context_entry)
+
+                dbot_score = Common.DBotScore(
+                    indicator=domain_to_score,
+                    indicator_type=DBotScoreType.DOMAIN,
+                    integration_name=INTEGRATION_NAME,
+                    score=score,
+                    reliability=demisto.params().get("integrationReliability"),
+                )
+
+                domain_object = Common.Domain(
+                    domain=domain_to_score,
+                    dbot_score=dbot_score,
+                    dns=", ".join(context_entry["DNS Details"].get("A", [])),
+                    creation_date=context_entry["Whois Details"].get("creation_date"),
+                    expiration_date=context_entry["Whois Details"].get("expiration_date"),
+                    updated_date=context_entry["Whois Details"].get("updated_date"),
+                    registrant_country=context_entry["Whois Details"].get("registrant_country"),
+                    registrant_name=context_entry["Whois Details"].get("registrant_name")
+                    or context_entry["Whois Details"].get("name"),
+                    registrar_name=context_entry["Whois Details"].get("registrar"),
+                    organization=context_entry["Whois Details"].get("org"),
+                    geo_country=context_entry["Whois Details"].get("country"),
+                    sub_domains=context_entry["Subdomains"],
+                    name_servers=context_entry["DNS Details"].get("NS") or context_entry["Whois Details"].get("name_servers"),
+                )
+
+                command_results_list.append(
+                    CommandResults(
+                        outputs_prefix="SOCRadarThreatFusion.Reputation.Domain",
+                        outputs_key_field="Domain",
+                        readable_output=human_readable,
+                        raw_response=raw_response,
+                        outputs=context_entry,
+                        indicator=domain_object,
+                    )
+                )
+            else:
+                message = (
+                    f"Error at scoring domain {domain_to_score} while getting API response. "
+                    f"SOCRadar ThreatFusion API Response: {raw_response.get('message', '')}"
+                )
+                command_results_list.append(CommandResults(readable_output=message))
+        if not command_results_list:
+            command_results_list = [CommandResults("SOCRadar ThreatFusion could not find any results for the given domain(s).")]
+
+        return command_results_list
+
+
+    def file_command(client: Client, args: dict[str, Any]) -> List[CommandResults]:
+        """Returns SOCRadar reputation details for the given hash entities.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :type args: Dict[str, Any]
+        :param args: contains all arguments for hash_command
+
+        :return:
+            List of ``CommandResults`` objects that is then passed to ``return_results``
+        :rtype: ``List[CommandResults]``
+        """
+        file_hashes = args.get("file", "")
+        file_hash_list: list = argToList(file_hashes)
+        verify_entity_type(file_hash_list, "hash")
+
+        command_results_list: List[CommandResults] = []
+
+        for hash_to_score in file_hash_list:
+            hash_type = get_hash_type(hash_to_score)
+
+            raw_response = client.get_entity_score(hash_to_score)
+
+            if raw_response.get("is_success"):
+                if raw_response.get("data", {}).get("is_whitelisted"):
+                    score = 1
+                elif (score := raw_response.get("data", {}).get("score", 0)) is not None:
+                    score = calculate_dbot_score(score)
+                title = f"SOCRadar - Analysis results for hash: {hash_to_score}"
+
+                context_entry = build_entry_context(raw_response, "hash")
+                human_readable = tableToMarkdown(title, context_entry)
+
+                dbot_score = Common.DBotScore(
+                    indicator=hash_to_score,
+                    indicator_type=DBotScoreType.FILE,
+                    integration_name=INTEGRATION_NAME,
+                    score=score,
+                    reliability=demisto.params().get("integrationReliability"),
+                )
+
+                file_object = Common.File(dbot_score=dbot_score)
+                # hash_type can either be 'sha-1' or 'md5' at this point.
+                if hash_type == "sha-1":
+                    file_object.sha1 = hash_to_score
+                else:
+                    file_object.md5 = hash_to_score
+
+                command_results_list.append(
+                    CommandResults(
+                        outputs_prefix="SOCRadarThreatFusion.Reputation.Hash",
+                        outputs_key_field="File",
+                        readable_output=human_readable,
+                        raw_response=raw_response,
+                        outputs=context_entry,
+                        indicator=file_object,
+                    )
+                )
+            else:
+                message = (
+                    f"Error at scoring file hash {hash_to_score} while getting API response. "
+                    f"SOCRadar ThreatFusion API Response: {raw_response.get('message', '')}"
+                )
+                command_results_list.append(CommandResults(readable_output=message))
+        if not command_results_list:
+            command_results_list = [CommandResults("SOCRadar ThreatFusion could not find any results for the given file hash(es).")]
+
+        return command_results_list
+
+
+    def score_ip_command(client: Client, args: dict[str, Any]) -> CommandResults:
+        """Returns SOCRadar reputation details for the given IP entity.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :type args: Dict[str, Any]
+        :param args: contains all arguments for list-detections command
+
+        :return:
+            A ``CommandResults`` object that is then passed to ``return_results``
+        :rtype: ``CommandResults``
+        """
+        ip_to_score = args.get("ip", "")
+        verify_entity_type([ip_to_score], "ip")
+
+        raw_response = client.get_entity_score(ip_to_score)
+        if raw_response.get("is_success"):
+            if raw_response.get("data", {}).get("is_whitelisted"):
+                score = 1
+            elif (score := raw_response.get("data", {}).get("score", 0)) is not None:
+                score = calculate_dbot_score(score)
+            title = f"SOCRadar - Analysis results for IP: {ip_to_score}"
+            context_entry = build_entry_context(raw_response, "ip")
+            dbot_entry = build_dbot_entry(ip_to_score, DBotScoreType.IP, "SOCRadar ThreatFusion", score)
+            human_readable = tableToMarkdown(title, context_entry)
+            context_entry.update(dbot_entry)
+        else:
+            message = f"Error while getting API response. SOCRadar API Response: {raw_response.get('message', '')}"
+            raise DemistoException(message=message)
+
+        return CommandResults(
+            outputs_prefix="SOCRadarThreatFusion.Reputation.IP",
+            outputs_key_field="IP",
+            readable_output=human_readable,
+            raw_response=raw_response,
+            outputs=context_entry,
+        )
+
+
+    def score_domain_command(client: Client, args: dict[str, Any]) -> CommandResults:
+        """Returns SOCRadar reputation details for the given domain entity.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :type args: Dict[str, Any]
+        :param args: contains all arguments for list-detections command
+
+        :return:
+            A ``CommandResults`` object that is then passed to ``return_results``
+        :rtype: ``CommandResults``
+        """
+        domain_to_score = args.get("domain", "")
+        verify_entity_type([domain_to_score], "domain")
+
+        raw_response = client.get_entity_score(domain_to_score)
+        if raw_response.get("is_success"):
+            if raw_response.get("data", {}).get("is_whitelisted"):
+                score = 1
+            elif (score := raw_response.get("data", {}).get("score", 0)) is not None:
+                score = calculate_dbot_score(score)
+            title = f"SOCRadar - Analysis results for domain: {domain_to_score}"
+            context_entry = build_entry_context(raw_response, "domain")
+            dbot_entry = build_dbot_entry(domain_to_score, DBotScoreType.DOMAIN, "SOCRadar ThreatFusion", score)
+            human_readable = tableToMarkdown(title, context_entry)
+            context_entry.update(dbot_entry)
+        else:
+            message = f"Error while getting API response. SOCRadar API Response: {raw_response.get('message', '')}"
+            raise DemistoException(message=message)
+
+        return CommandResults(
+            outputs_prefix="SOCRadarThreatFusion.Reputation.Domain",
+            outputs_key_field="Domain",
+            readable_output=human_readable,
+            raw_response=raw_response,
+            outputs=context_entry,
+        )
+
+
+    def score_hash_command(client: Client, args: dict[str, Any]) -> CommandResults:
+        """Returns SOCRadar reputation details for the given hash entity.
+
+        :type client: ``Client``
+        :param client: client to use
+
+        :type args: Dict[str, Any]
+        :param args: contains all arguments for list-detections command
+
+        :return:
+            A ``CommandResults`` object that is then passed to ``return_results``
+        :rtype: ``CommandResults``
+        """
+        hash_to_score = args.get("hash", "")
+        verify_entity_type([hash_to_score], "hash")
+        hash_type = get_hash_type(hash_to_score)
+
+        raw_response = client.get_entity_score(hash_to_score)
+        if raw_response.get("is_success"):
+            if raw_response.get("data", {}).get("is_whitelisted"):
+                score = 1
+            elif (score := raw_response.get("data", {}).get("score", 0)) is not None:
+                score = calculate_dbot_score(score)
+            title = f"SOCRadar - Analysis results for hash: {hash_to_score}"
+            context_entry = build_entry_context(raw_response, "hash")
+            dbot_entry = build_dbot_entry(hash_to_score, hash_type, "SOCRadar ThreatFusion", score)
+            human_readable = tableToMarkdown(title, context_entry)
+            context_entry.update(dbot_entry)
+        else:
+            message = f"Error while getting API response. SOCRadar API Response: {raw_response.get('message', '')}"
+            raise DemistoException(message=message)
+
+        return CommandResults(
+            outputs_prefix="SOCRadarThreatFusion.Reputation.Hash",
+            outputs_key_field="File",
+            readable_output=human_readable,
+            raw_response=raw_response,
+            outputs=context_entry,
+        )
+
+
+    """ MAIN FUNCTION """
+
+
+    def main() -> None:
+        """main function, parses params and runs command functions
+
+        :return:
+        :rtype:
+        """
+
+        api_key = demisto.params().get("apikey")
+        base_url = SOCRADAR_API_ENDPOINT
+        verify_certificate = not demisto.params().get("insecure", False)
+        proxy = demisto.params().get("proxy", False)
+
+        demisto.debug(f"Command being called is {demisto.command()}")
+        try:
+            client = Client(base_url=base_url, api_key=api_key, verify=verify_certificate, proxy=proxy)
+            command = demisto.command()
+
+            commands = {
+                "ip": ip_command,
+                "domain": domain_command,
+                "file": file_command,
+                "socradar-score-ip": score_ip_command,
+                "socradar-score-domain": score_domain_command,
+                "socradar-score-hash": score_hash_command,
+            }
+            if command == "test-module":
+                return_results(test_module(client))
+            else:
+                command_function = commands.get(command)
+                if command_function:
+                    return_results(command_function(client, demisto.args()))
+
+        except Exception as e:
+            demisto.error(traceback.format_exc())
+            return_error(f"Failed to execute {demisto.command()} command.\nError:\n{str(e)}")
+
+
+    """ ENTRY POINT """
+
+
+    if __name__ in ("__main__", "__builtin__", "builtins"):
+        main()
+
+    register_module_line('SOCRadarThreatFusion', 'end', __line__())
+  subtype: python3
+  type: python
+system: true
