@@ -1,0 +1,2212 @@
+category: Authentication & Identity Management
+commonfields:
+  id: Okta IAM
+  version: -1
+configuration:
+- display: Okta URL (https://<domain>.okta.com)
+  name: url
+  required: true
+  section: Connect
+  type: 0
+- display: ""
+  displaypassword: API Token (see detailed instructions)
+  hiddenusername: true
+  name: credentials
+  required: false
+  section: Connect
+  type: 9
+- display: API Token (See detailed instructions)
+  hidden: true
+  name: apitoken
+  required: false
+  section: Connect
+  type: 4
+- advanced: true
+  display: Trust any certificate (not secure)
+  name: insecure
+  required: false
+  section: Connect
+  type: 8
+- advanced: true
+  display: Use system proxy settings
+  name: proxy
+  required: false
+  section: Connect
+  type: 8
+- advanced: true
+  defaultvalue: "true"
+  display: Allow creating users
+  name: create-user-enabled
+  required: false
+  section: Collect
+  type: 8
+- advanced: true
+  defaultvalue: "true"
+  display: Allow updating users
+  name: update-user-enabled
+  required: false
+  section: Collect
+  type: 8
+- advanced: true
+  defaultvalue: "true"
+  display: Allow enabling users
+  name: enable-user-enabled
+  required: false
+  section: Collect
+  type: 8
+- advanced: true
+  defaultvalue: "true"
+  display: Allow disabling users
+  name: disable-user-enabled
+  required: false
+  section: Collect
+  type: 8
+- advanced: true
+  defaultvalue: "true"
+  display: Automatically create user if not found in update command
+  name: create-if-not-exists
+  required: false
+  section: Collect
+  type: 8
+- defaultvalue: User Profile - Okta (Incoming)
+  display: Incoming Mapper
+  name: mapper-in
+  required: true
+  section: Connect
+  type: 0
+- defaultvalue: User Profile - Okta (Outgoing)
+  display: Outgoing Mapper
+  name: mapper-out
+  required: true
+  section: Connect
+  type: 0
+- defaultvalue: "50"
+  display: Fetch limit (recommended value is less than 200)
+  name: max_fetch
+  required: false
+  section: Collect
+  type: 0
+- display: Fetch incidents
+  name: isFetch
+  required: false
+  section: Collect
+  type: 8
+- defaultvalue: "1"
+  display: Incidents Fetch Interval
+  name: incidentFetchInterval
+  required: false
+  section: Collect
+  type: 19
+- display: Incident type
+  name: incidentType
+  required: false
+  section: Connect
+  type: 13
+- additionalinfo: Configure an "IAM - Configuration" incident to specify the Okta
+    apps you wish to sync to XSOAR. Further information about IAM configuration is
+    detailed in the Help (the "?" icon).
+  advanced: true
+  defaultvalue: "true"
+  display: Query only application events configured in IAM Configuration
+  name: auto_generate_query_filter
+  required: false
+  section: Collect
+  type: 8
+- additionalinfo: 'Use a query filter expression in SCIM format. Note: make sure the
+    "Query only application events configured in IAM Configuration" is unchecked to
+    use this parameter. See the Help (the "?" icon) to learn more about the filter
+    parameter.'
+  advanced: true
+  display: Fetch Query Filter (Okta system log events)
+  name: fetch_query_filter
+  required: false
+  section: Collect
+  type: 0
+- defaultvalue: 0 minutes
+  display: First fetch timestamp (<number> <time unit>, e.g., 12 hours, 7 days)
+  name: first_fetch
+  required: false
+  section: Collect
+  type: 0
+contentitemexportablefields:
+  contentitemfields:
+    definitionid: ""
+    fromServerVersion: 6.0.0
+    itemVersion: 3.3.35
+    packID: Okta
+    packName: Okta
+    packPropagationLabels:
+    - all
+    prevname: ""
+    propagationLabels: []
+    toServerVersion: ""
+defaultclassifier: Okta IAM - App Sync (classifier)
+defaultmapperin: Okta IAM - App Sync (mapper)
+description: Integrate with Okta's Identity Access Management service to execute CRUD
+  operations to employee lifecycle processes.
+detaileddescription: "## Get Your Okta API Token\n\nIn order to use this integration,
+  you need to enter your Okta API token in the **API Token** integration instance
+  parameter. For information on getting your Okta API token, see the [Okta documentation](https://developer.okta.com/docs/api/getting_started/getting_a_token).\n\n##
+  Enable/Disable CRUD Commands\nYou can select which CRUD commands are enabled in
+  the integration instance configuration settings. By default, all commands are enabled.\n\n##
+  Add Custom Indicator Fields\nFollow these steps to add custom fields to the User
+  Profile indicator.\n\n1. In XSOAR, create the custom indicator and incident field,
+  for example, **Middle Name**.\n2. Duplicate the **User Profile - Okta (Incoming)**
+  mapper and/or the **User Profile - Okta (Outging)** mapper.\n3. Add and map the
+  custom field to the necessary mapper(s).\n4. Go to the Okta IAM integration instance
+  and in the mapper textbox, replace the name of the default mapper with the custom
+  mapper you created.\n\n## Automatically create user if not found in update command\nThe
+  *create-if-not-exists* parameter specifies if a new user should be created when
+  the User Profile passed was not found in the 3rd-party integration.\n\n## Fetch
+  incidents using an \"IAM - Configuration\" incident\nWhen the \"Query only application
+  events configured in IAM Configuration\" checkbox is selected, add or remove event
+  types for the applications you configured in the **IAM Configuration** incident
+  are retrieved.  You must have at least one application configured in XSOAR to fetch
+  incidents from Okta.\n\n## Fetch incidents using a manual query filter expression\n**Note:
+  Cortex XSOAR recommends you use the Query only application events configured in
+  IAM Configuration option to generate the fetch-incidents query filter. The following
+  following method should be used primarily for debugging purposes.**\nClear the \"Query
+  only application events configured in IAM Configuration\" checkbox to use a custom
+  fetch query filter expression. The expression must be in SCIM syntax, and include
+  the add and remove event types, as well as the application ID. \nFor example: `(eventType
+  eq \"application.user_membership.add\" or eventType eq \"application.user_membership.remove\")
+  and target.id eq \"0oar418fvkm67MWGd0h7\"`\nYou may also use the advanced search
+  in Okta's System Logs to generate the filter expression.\nFor more details, visit
+  [Okta API reference](https://developer.okta.com/docs/reference/api/system-log/#expression-filter).\n\n\n---\n[View
+  Integration Documentation](https://xsoar.pan.dev/docs/reference/integrations/okta-iam)"
+display: Okta IAM
+image: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAAyCAYAAACXpx/YAAAHnklEQVR4Ae1aO1MbVxS+Amwz4wfK2AV+FEvnLtCls/gFiF9g6NKBfgGiSyqhKumQylTIv4ClcyrkMpXXhW06lIEiMDzyfatzxGWNxK53lfE455tZ7d37OLp7z/Oeu84ZDAaDwWAwGAwGg8FgMBgMBoPB8B3gxYsXlefPn6/o89OnT9/jutS6IAjKz549qzpD4ZhwYwYYuX5+fr57cXGx4VVH/EF9fD89Pa1cXl7uoO+uMxSKsTBYNHae5Xv37rVKpVIPxWB2djZgHZ4/JIYsSX2kFdrXkA+FM5hmVzR2h0yKoojMbbINDKwK436U7hEFAdpb4QPGbCoN9H0Ps73h/kPg/1p0HbzSChitjo5x3yAKZ/CdO3c6YE4XxQD3bdaBgT1pXpqYmCBDY+0+ODiIUN6Vvi0+c2HVnONecoZcKIzBKvHU2Lt37y4Kkyv0wR6D530zTFOOtjLL1F5o0DbaY4ajfhMMrztDLhTCYDKXjGF0rGYZDGpLc2NycpLMjnCVUR9IfQRTHkfO1F5o9mu0rbgEcykENIOMtJ0hM6ZcARCzy2IgvrMOjWwL0+bpj8k0tiPoCiEAsekVre+iLRLNddKvxW0Tyq8gBOusR6TNe91lAIUD4xnAzUtVD3N6g7qQ7sBlAOeKsSss430ijG8l+/C9vcfup0+fOmnm8/Hjx1aCPucXugJQCIPlRTqYJIOjDTCmjjvLy6jfxvPe9PR0RwKuAWSRW9TOk5OTJk05xhzi2lfTzQgcL9yEYGylnQ8DNwoVFjNItqG+CpoxMzDvzTT0ZH67an3AiOWb+qF9EBTSKuEWM1gs3DbmU7lpPrBQG6C5qbEHyryFrgDkNtG+6aRU4yVXtQkT3seLNT9//ryeZK4PtrEPmYvHLTKXjKU2w5/P0VyPGu9DovLYj/t/gSuU7VoMCiF9fhqaYO6G0uOckpqZ+J/4Qr+/WaHuC8WKdpJ5+POhW2q4MSC3BsN0bmOhGCyFeNyD9IWQ1Dnc62Jiw7S0oKVtLCZpvaEpR7lKxkKIApZBs0dzNmy8ROA7KKrQdUBn1RcOBn1iZRgPrOD5HYRrqHVA+xpu60pvVOAHOnPJOsx5w487qADoF3pzrlC7vT6FooggKxBzyoCpQa3FS9HEzmDitSy+jozAGPruBhj6nvQgPIdaTmTDvoD4sEAeO1jI5aTmCzNXvaqhNEX76jo9vFPNZQDHS+Co4xeTvpXPrPetS5HIzWCYqwVMcE4mGfs0j+GZARpl9b/uyuSF4tPe3DJ8SQv0aW74nGliQ3ksa9YtMY8lmladizAnchmgQZPQaw8bL/VNNwYUEmTJBHmFkNoW7gG2RgHMc9dlBE06NZ9bKwZdMMmpaWgCBUgz7p278oscl+w/MNsULmh+5LIj0AIj41v6Zl6rNMjNYPiohmhd4K5eiL5Qo83IZYBsuRpgdPwME71Jvz41NRURKcncau4kiHNpgH5VaHkzi7BlBeMLfedC6br8qIqfYbBAcxawMqdPoQmNWODWg7lt+mEI0/4t4yK5BykSI5oPH5xq+RC3o2a+rLl1lwFeBo/rMT+qL+Ywsv1rkZvBsgg1Lgh82w9appnF/XWWDJQEJQ3RrkVI9YJsu5ThH24hMfDRsrUZ9T8aI/SGJRUYMdN3ymO83cnyPvgPfzu1Nmys1K+5MSA3g7n3ZWRKP8yJYhFmGEVD4rnHrGKhV9LS4mmT60fl8WkSpLos9Je5BcGWZyQtjNvyLMf6TadRzCZp1kzGjAxusA9fl7w6we3azrC+SQaK4ITe2O2kFZAkCtcqcGNAIac1nCT2w/F+0c9AUbvJcHbBQtWGJStkfINBEoRjVfayAa6I0TBPqNImOrjPxc1PGkS4ujKfwHkJB9ZDcBb0gceFtDos0wpp1OslKwLpuoVxNRmz41kDplxDef89LwW57+0MiI4niFUvsePvHji3GzNmWVAIg5n289J0TTFNkeSi66ykyZXIepAHVsGQrA8FJHD93DRfLE57Ck0uXG1EBuka/GTGiG4hLMK1ffIwBhM3MKpGyyWJii++RGHkjfnG+21NnbohWirMXgVtrkFF60E/N38mXQF4/PhxF4z7if4Si/L78fFx9OjRozWPuYyEX0mOuvTw4cPfcG2dnZ395frbkZeMuNH+M8qz/OIDdH558OBBW8w2afwKuqm0GP3e3r9//49SH9OkKU0UlA4TFqC/2ev1/vHHYQyPM+N+yJ23/Xb+N9r/RHvg+hr2cmZmhlmwt5jnBxl34K727nucByuPjo4Onjx50ub7+oGo9GtLdot09kp9QvzfCOPbLifGcqBO3yfMjVxfI2v0qWyT4GlHUoWDsphmvjzNaxfatajaRe3JmmQw9FH4Fx3KXI2E6UeYj5XmnqTmYjOHejI5DmDIXEkjhrjmeXqjAYkx9+tROIP1Mxvca/oJjuyTmYtd8KLILvqQufHWRkwXDxw0OcJ9YcUZvj342wUeyfGDND2aky80Bs9kuHy0dqjjGJQweHGG3BjLZ7N+ZOodg107KNB6L49d1j0zU4JFfdHwf0chhw2jAL+6SG2E6Y19rcdwvWs2LDKmGgwGg8FgMBgMBoPBYDAYDAbDd4l/AYb3/1GuQ4UrAAAAAElFTkSuQmCC
+name: Okta IAM
+script:
+  commands:
+  - arguments:
+    - description: User Profile indicator details.
+      name: user-profile
+      required: true
+    - auto: PREDEFINED
+      defaultValue: "true"
+      description: When set to true, after the command execution the status of the
+        user in the 3rd-party integration will be active.
+      name: allow-enable
+      predefined:
+      - "true"
+      - "false"
+    description: Creates a user.
+    execution: true
+    name: iam-create-user
+    outputs:
+    - contextPath: IAM.Vendor.active
+      description: When true, indicates that the employee's status is active in the
+        3rd-party integration.
+      type: Boolean
+    - contextPath: IAM.Vendor.brand
+      description: Name of the integration.
+      type: String
+    - contextPath: IAM.Vendor.details
+      description: Provides the raw data from the 3rd-party integration.
+      type: string
+    - contextPath: IAM.Vendor.email
+      description: The employee's email address.
+      type: String
+    - contextPath: IAM.Vendor.errorCode
+      description: HTTP error response code.
+      type: Number
+    - contextPath: IAM.Vendor.errorMessage
+      description: Reason why the API failed.
+      type: String
+    - contextPath: IAM.Vendor.id
+      description: The employee's user ID in the app.
+      type: String
+    - contextPath: IAM.Vendor.instanceName
+      description: Name of the integration instance.
+      type: string
+    - contextPath: IAM.Vendor.success
+      description: When true, indicates that the command was executed successfully.
+      type: Boolean
+    - contextPath: IAM.Vendor.username
+      description: The employee's username in the app.
+      type: String
+  - arguments:
+    - description: A User Profile indicator.
+      name: user-profile
+      required: true
+    - auto: PREDEFINED
+      defaultValue: "true"
+      description: When set to true, after the command execution the status of the
+        user in the 3rd-party integration will be active.
+      name: allow-enable
+      predefined:
+      - "true"
+      - "false"
+    description: Updates an existing user with the data passed in the user-profile
+      argument.
+    execution: true
+    name: iam-update-user
+    outputs:
+    - contextPath: IAM.Vendor.active
+      description: When true, indicates that the employee's status is active in the
+        3rd-party integration.
+      type: Boolean
+    - contextPath: IAM.Vendor.brand
+      description: Name of the integration.
+      type: String
+    - contextPath: IAM.Vendor.details
+      description: Provides the raw data from the 3rd-party integration.
+      type: string
+    - contextPath: IAM.Vendor.email
+      description: The employee's email address.
+      type: String
+    - contextPath: IAM.Vendor.errorCode
+      description: HTTP error response code.
+      type: Number
+    - contextPath: IAM.Vendor.errorMessage
+      description: Reason why the API failed.
+      type: String
+    - contextPath: IAM.Vendor.id
+      description: The employee's user ID in the app.
+      type: String
+    - contextPath: IAM.Vendor.instanceName
+      description: Name of the integration instance.
+      type: string
+    - contextPath: IAM.Vendor.success
+      description: When true, indicates that the command was executed successfully.
+      type: Boolean
+    - contextPath: IAM.Vendor.username
+      description: The employee's username in the app.
+      type: String
+  - arguments:
+    - description: A User Profile indicator.
+      name: user-profile
+      required: true
+    description: Retrieves a single user resource.
+    name: iam-get-user
+    outputs:
+    - contextPath: IAM.Vendor.active
+      description: When true, indicates that the employee's status is active in the
+        3rd-party integration.
+      type: Boolean
+    - contextPath: IAM.Vendor.brand
+      description: Name of the integration.
+      type: String
+    - contextPath: IAM.Vendor.details
+      description: Provides the raw data from the 3rd-party integration.
+      type: string
+    - contextPath: IAM.Vendor.email
+      description: The employee's email address.
+      type: String
+    - contextPath: IAM.Vendor.errorCode
+      description: HTTP error response code.
+      type: Number
+    - contextPath: IAM.Vendor.errorMessage
+      description: Reason why the API failed.
+      type: String
+    - contextPath: IAM.Vendor.id
+      description: The employee's user ID in the app.
+      type: String
+    - contextPath: IAM.Vendor.instanceName
+      description: Name of the integration instance.
+      type: string
+    - contextPath: IAM.Vendor.success
+      description: When true, indicates that the command was executed successfully.
+      type: Boolean
+    - contextPath: IAM.Vendor.username
+      description: The employee's username in the app.
+      type: String
+  - arguments:
+    - description: A User Profile indicator.
+      name: user-profile
+      required: true
+    description: Disable an active user.
+    execution: true
+    name: iam-disable-user
+    outputs:
+    - contextPath: IAM.Vendor.active
+      description: When true, indicates that the employee's status is active in the
+        3rd-party integration.
+      type: Boolean
+    - contextPath: IAM.Vendor.brand
+      description: Name of the integration.
+      type: String
+    - contextPath: IAM.Vendor.details
+      description: Provides the raw data from the 3rd-party integration.
+      type: string
+    - contextPath: IAM.Vendor.email
+      description: The employee's email address.
+      type: String
+    - contextPath: IAM.Vendor.errorCode
+      description: HTTP error response code.
+      type: Number
+    - contextPath: IAM.Vendor.errorMessage
+      description: Reason why the API failed.
+      type: String
+    - contextPath: IAM.Vendor.id
+      description: The employee's user ID in the app.
+      type: String
+    - contextPath: IAM.Vendor.instanceName
+      description: Name of the integration instance.
+      type: string
+    - contextPath: IAM.Vendor.success
+      description: When true, indicates that the command was executed successfully.
+      type: Boolean
+    - contextPath: IAM.Vendor.username
+      description: The employee's username in the app.
+      type: String
+  - arguments: []
+    description: Retrieves a User Profile schema which holds all of the user fields
+      within the application. Used for outgoing-mapping through the Get Schema option.
+    name: get-mapping-fields
+  - arguments:
+    - description: ID of the user for which to get information.
+      name: user_id
+      required: true
+    - description: ID of the application for which to get information.
+      name: application_id
+      required: true
+    description: Returns information about application's user assignment.
+    name: okta-get-app-user-assignment
+    outputs:
+    - contextPath: Okta.AppUserAssignment.UserID
+      description: ID of the user.
+      type: string
+    - contextPath: Okta.AppUserAssignment.AppID
+      description: ID of the application.
+      type: string
+    - contextPath: Okta.AppUserAssignment.IsAssigned
+      description: When True, indicates that the user is assigned to the application.
+      type: boolean
+    - contextPath: Okta.AppUserAssignment.ProfileInApp
+      description: The user profile data in the application.
+      type: unknown
+  - arguments:
+    - description: Search for applications by their names.
+      name: query
+    - defaultValue: "0"
+      description: Page number (0-based).
+      name: page
+    - defaultValue: "50"
+      description: Maximum number of apps to retrieve (maximal value is 200).
+      name: limit
+    description: Returns a list of Okta applications data.
+    name: okta-iam-list-applications
+    outputs:
+    - contextPath: Okta.Application.ID
+      description: ID of the application.
+      type: string
+    - contextPath: Okta.Application.Name
+      description: Name of the application.
+      type: string
+    - contextPath: Okta.Application.Label
+      description: Label of the application.
+      type: string
+    - contextPath: Okta.Application.Logo
+      description: Logo of the application.
+      type: string
+  - arguments:
+    - description: IAM configuration data.
+      name: configuration
+      required: true
+    description: Updates IAM configuration data in the integration context.
+    name: okta-iam-set-configuration
+  - arguments: []
+    description: Gets the IAM configuration data from the integration context.
+    name: okta-iam-get-configuration
+    outputs:
+    - contextPath: Okta.IAMConfiguration.ApplicationID
+      description: An Okta application ID.
+      type: String
+    - contextPath: Okta.IAMConfiguration.Name
+      description: Name of the Okta application.
+      type: String
+    - contextPath: Okta.IAMConfiguration.Label
+      description: Label of the Okta application.
+      type: String
+    - contextPath: Okta.IAMConfiguration.Logo
+      description: Logo of the application.
+      type: String
+    - contextPath: Okta.IAMConfiguration.Instance
+      description: An XSOAR IAM integration instance name.
+      type: String
+  - arguments:
+    - description: ID of the user for which to get the information.
+      name: user_id
+      required: true
+    description: List all applications assigned to a user.
+    name: okta-iam-list-user-applications
+    outputs:
+    - contextPath: Okta.Application.ID
+      description: ID of the application.
+      type: String
+    - contextPath: Okta.Application.Label
+      description: Label of the application.
+      type: String
+    - contextPath: Okta.Application.Name
+      description: Name of the application.
+      type: String
+    - contextPath: Okta.Application.Status
+      description: Status of the application.
+      type: String
+  - arguments:
+    - description: Group SCIM Data.
+      name: scim
+      required: true
+    - auto: PREDEFINED
+      defaultValue: "true"
+      description: 'Field to indicate if members need to be included in the response. '
+      name: includeMembers
+      predefined:
+      - "true"
+      - "false"
+      required: true
+    description: Retrieves the group information, including its members.
+    name: iam-get-group
+    outputs:
+    - contextPath: GetGroup.id
+      description: ID of the group.
+      type: String
+    - contextPath: GetGroup.displayName
+      description: The display name of the group.
+      type: String
+    - contextPath: GetGroup.members.display
+      description: The display name of the group member.
+      type: String
+    - contextPath: GetGroup.members.value
+      description: ID of the group member.
+      type: String
+    - contextPath: GetGroup.success
+      description: Indicates whether the command succeeded.
+      type: Boolean
+    - contextPath: GetGroup.errorCode
+      description: HTTP error response code.
+      type: Number
+    - contextPath: GetGroup.errorMessage
+      description: Reason why the API failed.
+      type: String
+  - arguments:
+    - description: 'Useful for performing structured queries where constraints on
+        LogEvent attribute values can be explicitly targeted.  The following expressions
+        are supported for events with the filter query parameter: eventType eq " :eventType"
+        -Events that have a specific action; eventType target.id eq ":id" - Events
+        published with a specific target id; actor.id eq ":id"- Events published with
+        a specific actor ID. For more information about filtering, visit https://developer.okta.com/docs/api/getting_started/design_principles#filtering'
+      name: filter
+    - description: 'Filters the lower time bound of the log events in the Internet
+        Date/Time Format profile of ISO 8601. For example: 2017-05-03T16:22:18Z.'
+      name: since
+    - description: 'Filters the upper time bound of the log events in the Internet
+        Date/Time Format profile of ISO 8601. For example: 2017-05-03T16:22:18Z.'
+      name: until
+    - auto: PREDEFINED
+      defaultValue: ASCENDING
+      description: The order of the returned events. Can be "ASCENDING" or "DESCENDING".
+        The default is "ASCENDING".
+      name: sortOrder
+      predefined:
+      - ASCENDING
+      - DESCENDING
+    - defaultValue: "100"
+      description: The maximum number of results to return, between 0 and 1000 maximum.
+        The default is 100.
+      name: limit
+    description: Gets logs by providing optional filters.
+    name: okta-get-logs
+    outputs:
+    - contextPath: Okta.Logs.Events.actor.alternateId
+      description: Alternative ID of the actor.
+      type: String
+    - contextPath: Okta.Logs.Events.actor.displayName
+      description: Display name of the actor.
+      type: String
+    - contextPath: Okta.Logs.Events.actor.id
+      description: ID of the actor.
+      type: String
+    - contextPath: Okta.Logs.Events.client.userAgent.rawUserAgent
+      description: A raw string representation of user agent, formatted according
+        to section 5.5.3 of HTTP/1.1 Semantics and Content. Both the browser and the
+        OS fields can be derived from this field.
+      type: String
+    - contextPath: Okta.Logs.Events.client.userAgent.os
+      description: The operating system on which the client runs. For example, Microsoft
+        Windows 10.
+      type: String
+    - contextPath: Okta.Logs.Events.client.userAgent.browser
+      description: Identifies the type of web browser, if relevant. For example, Chrome.
+      type: String
+    - contextPath: Okta.Logs.Events.client.device
+      description: Type of device from which the client operated. For example, Computer.
+      type: String
+    - contextPath: Okta.Logs.Events.client.id
+      description: For OAuth requests, the ID of the OAuth client making the request.
+        For SSWS token requests, the ID of the agent making the request.
+      type: String
+    - contextPath: Okta.Logs.Events.client.ipAddress
+      description: IP address from which the client made its request.
+      type: String
+    - contextPath: Okta.Logs.Events.client.geographicalContext.city
+      description: The city encompassing the area containing the geo-location coordinates,
+        if available. For example, Seattle, San Francisco.
+      type: String
+    - contextPath: Okta.Logs.Events.client.geographicalContext.state
+      description: Full name of the state or province encompassing the area containing
+        the geo-location coordinates. For example, Montana, Incheon.
+      type: String
+    - contextPath: Okta.Logs.Events.client.geographicalContext.country
+      description: Full name of the country encompassing the area containing the geo-location
+        coordinates. For example, France, Uganda.
+      type: String
+    - contextPath: Okta.Logs.Events.displayMessage
+      description: The display message for an event.
+      type: String
+    - contextPath: Okta.Logs.Events.eventType
+      description: Type of event that was published.
+      type: String
+    - contextPath: Okta.Logs.Events.outcome.result
+      description: Result of the action. Can be "SUCCESS", "FAILURE", "SKIPPED", or
+        "UNKNOWN".
+      type: String
+    - contextPath: Okta.Logs.Events.outcome.reason
+      description: Reason for the result. For example, INVALID_CREDENTIALS.
+      type: String
+    - contextPath: Okta.Logs.Events.published
+      description: Timestamp when the event was published.
+      type: String
+    - contextPath: Okta.Logs.Events.severity
+      description: The event severity. Can be "DEBUG", "INFO", "WARN", or "ERROR".
+      type: String
+    - contextPath: Okta.Logs.Events.securityContext.asNumber
+      description: Autonomous system number associated with the autonomous system
+        that the event request was sourced to.
+      type: Number
+    - contextPath: Okta.Logs.Events.securityContext.asOrg
+      description: Organization associated with the autonomous system that the event
+        request was sourced to.
+      type: String
+    - contextPath: Okta.Logs.Events.securityContext.isp
+      description: Internet service provider used to send the event's request.
+      type: String
+    - contextPath: Okta.Logs.Events.securityContext.domain
+      description: Specifies whether an event's request is from a known proxy.
+      type: String
+    - contextPath: Okta.Logs.Events.request.ipChain.IP
+      description: IP address.
+      type: String
+    - contextPath: Okta.Logs.Events.request.ipChain.geographicalContext.city
+      description: The city encompassing the area containing the geo-location coordinates,
+        if available. For example, Seattle, San Francisco.
+      type: String
+    - contextPath: Okta.Logs.Events.request.ipChain.geographicalContext.state
+      description: Full name of the state or province encompassing the area containing
+        the geo-location coordinates. For example, Montana, Incheon.
+      type: String
+    - contextPath: Okta.Logs.Events.request.ipChain.geographicalContext.country
+      description: Full name of the country encompassing the area containing the geo-location
+        coordinates. For example, France, Uganda.
+      type: String
+    - contextPath: Okta.Logs.Events.request.ipChain.source
+      description: Details regarding the source.
+      type: String
+    - contextPath: Okta.Logs.Events.target.id
+      description: ID of a target.
+      type: String
+    - contextPath: Okta.Logs.Events.target.type
+      description: Type of a target.
+      type: String
+    - contextPath: Okta.Logs.Events.target.alternateId
+      description: Alternative ID of a target.
+      type: String
+    - contextPath: Okta.Logs.Events.target.displayName
+      description: Display name of a target.
+      type: String
+  dockerimage: demisto/python3:3.12.8.3296088
+  isfetch: true
+  ismappable: true
+  isremotesyncout: true
+  runonce: false
+  script: |
+    register_module_line('Okta IAM', 'start', __line__())
+    CONSTANT_PACK_VERSION = '3.3.35'
+    demisto.debug('pack id = Okta, pack version = 3.3.35')
+
+    import urllib3
+
+
+    # Disable insecure warnings
+    urllib3.disable_warnings()
+
+    """CONSTANTS"""
+
+    BATCH_SIZE = 2000
+    DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+    DEPROVISIONED_STATUS = "DEPROVISIONED"
+    USER_IS_DISABLED_MSG = "User is already disabled."
+    USER_IS_DISABLED_ERROR = "E0000007"
+    ERROR_CODES_TO_SKIP = [
+        "E0000016",  # user is already enabled
+        USER_IS_DISABLED_ERROR,
+    ]
+    ERROR_CODES_TO_RETURN_ERROR = [
+        "E0000047",  # rate limit - resets after 1 minute
+    ]
+
+    FETCH_QUERY_EXCEPTION_MSG = (
+        'If you marked the "Query only application events configured in IAM Configuration" '
+        "checkbox in the instance configuration, you must add at least one application in "
+        "the IAM Configuration incident before fetching logs from Okta. "
+        "Alternatively, you can unmark this checkbox and provide a "
+        '"Fetch Query Filter" parameter instead.'
+    )
+    GET_USER_ATTRIBUTES = ["id", "login", "email"]
+
+    MAX_LOGS_LIMIT = 1000
+
+    """CLIENT CLASS"""
+
+
+    class Client(BaseClient):
+        """
+        Okta IAM Client class that implements logic to authenticate with Okta.
+        """
+
+        def test_connection(self):
+            uri = "users/me"
+            self._http_request(method="GET", url_suffix=uri)
+
+        def get_user(self, filter_name: str, filter_value: str):
+            filter_name = filter_name if filter_name == "id" else f"profile.{filter_name}"
+            uri = "users"
+            query_params = {"filter": f'{filter_name} eq "{filter_value}"'}
+
+            res = self._http_request(method="GET", url_suffix=uri, params=query_params)
+
+            if res and len(res) == 1:
+                return res[0]
+            return None
+
+        def deactivate_user(self, user_id):
+            uri = f"users/{user_id}/lifecycle/deactivate"
+            self._http_request(method="POST", url_suffix=uri)
+
+        def activate_user(self, user_id):
+            query_params = {"sendEmail": "false"}
+            uri = f"users/{user_id}/lifecycle/activate"
+            self._http_request(method="POST", url_suffix=uri, params=query_params)
+
+        def create_user(self, user_data):
+            # create a user in staged mode (not active)
+            body = {"profile": user_data}
+            uri = "users"
+            query_params = {"activate": "false", "provider": "true"}
+            res = self._http_request(method="POST", url_suffix=uri, json_data=body, params=query_params)
+            return res
+
+        def update_user(self, user_id, user_data):
+            body = {"profile": user_data}
+            uri = f"users/{user_id}"
+            res = self._http_request(method="POST", url_suffix=uri, json_data=body)
+            return res
+
+        def get_okta_fields(self):
+            okta_fields = {}
+            uri = "meta/schemas/user/default"
+            res = self._http_request(method="GET", url_suffix=uri)
+
+            base_properties = res.get("definitions", {}).get("base", {}).get("properties", {})
+            okta_fields.update({k: base_properties[k].get("title") for k in base_properties})
+
+            custom_properties = res.get("definitions", {}).get("custom", {}).get("properties", {})
+            okta_fields.update({k: custom_properties[k].get("title") for k in custom_properties})
+
+            return okta_fields
+
+        def http_request(self, method, url_suffix, full_url=None, params=None, data=None, headers=None):
+            if headers is None:
+                headers = self._headers
+            full_url = full_url if full_url else urljoin(self._base_url, url_suffix)
+
+            res = requests.request(method, full_url, verify=self._verify, headers=headers, params=params, json=data)
+            return res
+
+        def search_group(self, group_name):
+            uri = "groups"
+            query_params = {"q": encode_string_results(group_name)}
+            return self.http_request(method="GET", url_suffix=uri, params=query_params)
+
+        def get_group_by_id(self, group_id):
+            uri = f"groups/{group_id}"
+            return self.http_request(method="GET", url_suffix=uri)
+
+        def get_group_members(self, group_id):
+            uri = f"groups/{group_id}/users"
+            return self.get_paged_results(uri)
+
+        def get_paged_results(self, uri, query_param=None):
+            response = self.http_request(method="GET", url_suffix=uri, params=query_param)
+            paged_results = response.json()
+            if response.status_code != 200:
+                raise Exception(f"Error occurred while calling Okta API: {response.request.url}. Response: {response.json()}")
+            while "next" in response.links and len(response.json()) > 0:
+                next_page = response.links.get("next").get("url")
+                response = self._http_request(method="GET", full_url=next_page, url_suffix="")
+                if response.status_code != 200:
+                    raise Exception(f"Error occurred while calling Okta API: {response.request.url}. Response: {response.json()}")
+                paged_results += response.json()
+            return paged_results
+
+        def get_app_user_assignment(self, application_id, user_id):
+            uri = f"/apps/{application_id}/users/{user_id}"
+            res = self._http_request(method="GET", url_suffix=uri, resp_type="response", ok_codes=(200, 404))
+            return res
+
+        def list_user_apps(self, user_id):
+            uri = "apps"
+            query_params = {"filter": f'user.id eq "{user_id}"'}
+            res = self._http_request(method="GET", url_suffix=uri, params=query_params)
+            return res
+
+        def list_apps(self, query, page, limit):
+            query_params = {"q": query, "limit": limit}
+
+            curr_page = 0
+            apps_batch, next_page = self.list_apps_batch(url_suffix="/apps", params=query_params)
+
+            while apps_batch and curr_page != page:
+                curr_page += 1
+                apps_batch, next_page = self.list_apps_batch(full_url=next_page)
+
+            if not apps_batch:
+                apps_batch = []
+            return apps_batch
+
+        def list_apps_batch(self, url_suffix="", params=None, full_url=""):
+            """Gets a batch of apps from Okta.
+            Args:
+                url_suffix (str): The apps API endpoint.
+                params (dict): The API query params.
+                full_url (str): The full url retrieved from the last API call.
+
+            Return:
+                apps_batch (dict): The logs batch.
+                next_page (str): URL for next API call (equals '' on last batch).
+            """
+            if not url_suffix and not full_url:
+                return None, None
+
+            res = self._http_request(method="GET", url_suffix=url_suffix, params=params, full_url=full_url, resp_type="response")
+
+            logs_batch = res.json()
+            next_page = res.links.get("next", {}).get("url")
+
+            return logs_batch, next_page
+
+        def get_logs(
+            self,
+            next_page=None,
+            last_run_time=None,
+            time_now=None,
+            query_filter=None,
+            auto_generate_filter=False,
+            context=None,
+            limit=None,
+        ):
+            logs = []
+
+            uri = "logs"
+
+            if auto_generate_filter:
+                query_filter = get_query_filter(context)
+
+            params = {"filter": query_filter, "since": last_run_time, "until": time_now, "limit": limit}
+            limit = int(limit) if limit else None
+            if limit and limit <= MAX_LOGS_LIMIT:
+                return self._http_request(
+                    method="GET",
+                    url_suffix=uri,
+                    params=params,
+                ), None
+
+            if limit and limit > MAX_LOGS_LIMIT:
+                params["limit"] = MAX_LOGS_LIMIT
+
+            logs_batch, next_page = self.get_logs_batch(url_suffix=uri, params=params, full_url=next_page)
+
+            try:
+                while logs_batch:
+                    logs.extend(logs_batch)
+                    if limit and len(logs) > limit:
+                        return logs[:limit], next_page
+                    logs_batch, next_page = self.get_logs_batch(full_url=next_page)
+            except DemistoException as e:
+                # in case of too many API calls, we return what we got and save the next_page for next fetch
+                if not is_rate_limit_error(e):
+                    raise e
+
+            return logs, next_page
+
+        def get_logs_batch(self, url_suffix="", params=None, full_url=""):
+            """Gets a batch of logs from Okta.
+            Args:
+                url_suffix (str): The logs API endpoint.
+                params (dict): The API query params.
+                full_url (str): The full url retrieved from the last API call. Preferred over url_suffix if not empty.
+
+            Return:
+                logs_batch (dict): The logs batch.
+                next_page (str): URL for next API call (equals '' on last batch).
+            """
+            if not url_suffix and not full_url:
+                return None, None
+
+            res = self._http_request(method="GET", url_suffix=url_suffix, params=params, full_url=full_url, resp_type="response")
+
+            logs_batch = res.json()
+            next_page = res.links.get("next", {}).get("url")
+
+            return logs_batch, next_page
+
+
+    """HELPER FUNCTIONS"""
+
+
+    def get_all_user_profiles():
+        query = 'type:"User Profile"'
+        email_to_user_profile = {}
+
+        user_profiles: List[dict] = []
+        search_indicators = IndicatorsSearcher(query=query, size=BATCH_SIZE)
+        for user_profile_res in search_indicators:
+            user_profiles.extend(user_profile_res.get("iocs") or [])
+
+        for user_profile in user_profiles:
+            user_profile = user_profile.get("CustomFields", {})
+            email_to_user_profile[user_profile.get("email")] = user_profile
+
+        return email_to_user_profile
+
+
+    def get_event_username(log_entry):
+        for target in log_entry.get("target", []):
+            if target.get("type") == "User":
+                return target.get("alternateId")
+        return None
+
+
+    def should_drop_event(log_entry, email_to_user_profile):
+        """Returns a boolean value indicates whether the incident should be dropped.
+
+        Args:
+            log_entry (dict): The log entry.
+
+        Returns:
+            (bool) True iff the event should be dropped.
+        """
+        username = get_event_username(log_entry)
+        if username is not None and email_to_user_profile.get(username) is None:
+            demisto.info(f"Dropping incident for user with username {username} - User Profile does not exist in XSOAR.")
+            return True
+        return False
+
+
+    def add_user_profile_data_to_entry(log_entry, email_to_user_profile):
+        username = get_event_username(log_entry)
+        user_profile = email_to_user_profile.get(username, {})
+        log_entry.update(user_profile)
+        log_entry["UserProfile"] = user_profile
+
+
+    def get_query_filter(context):
+        iam_configuration = context.get("IAMConfiguration", [])
+        if not iam_configuration:
+            raise DemistoException(FETCH_QUERY_EXCEPTION_MSG)
+
+        application_ids = [row["ApplicationID"] for row in iam_configuration]
+
+        query_filter = '(eventType eq "application.user_membership.add" or eventType eq "application.user_membership.remove") and'
+
+        query_filter += "(" + " or ".join([f'target.id co "{app_id}"' for app_id in application_ids]) + ")"
+
+        return query_filter
+
+
+    def is_rate_limit_error(e):
+        if hasattr(e, "res") and e.res is not None:
+            return e.res.status_code == 429
+        return False
+
+
+    def handle_exception(user_profile, e, action, okta_user=None):
+        """Handles failed responses from Okta API by setting the User Profile object with the results.
+
+        Args:
+            user_profile (IAMUserProfile): The User Profile object.
+            e (Exception): The exception error. If DemistoException, holds the response json.
+            action (IAMActions): An enum represents the current action (get, update, create, etc).
+        """
+        if e.__class__ is DemistoException and hasattr(e, "res") and e.res is not None:
+            try:
+                resp = e.res.json()
+                error_code = resp.get("errorCode")
+                error_message = get_error_details(resp)
+            except ValueError:
+                error_code = e.res.status_code
+                error_message = str(e)
+        else:
+            error_code = ""
+            error_message = str(e)
+
+        if error_code == USER_IS_DISABLED_ERROR:
+            user_profile.set_user_is_already_disabled(okta_user)
+
+        elif error_code in ERROR_CODES_TO_SKIP:
+            user_profile.set_result(action=action, skip=True, skip_reason=error_message)
+        else:
+            should_return_error = error_code in ERROR_CODES_TO_RETURN_ERROR
+            user_profile.set_result(
+                action=action, success=False, return_error=should_return_error, error_code=error_code, error_message=error_message
+            )
+
+        demisto.error(traceback.format_exc())
+
+
+    def get_error_details(res):
+        """Parses the error details retrieved from Okta and outputs the resulted string.
+
+        Args:
+            res (dict): The data retrieved from Okta.
+
+        Returns:
+            (str) The parsed error details.
+        """
+        error_msg = f'{res.get("errorSummary")}. '
+        causes = ""
+        for idx, cause in enumerate(res.get("errorCauses", []), 1):
+            causes += f'{idx}. {cause.get("errorSummary")}\n'
+        if causes:
+            error_msg += f"Reason:\n{causes}"
+        return error_msg
+
+
+    """COMMAND FUNCTIONS"""
+
+
+    def test_module(client, is_fetch, fetch_query_filter, auto_generate_query_filter, context, first_fetch_str):
+        if is_fetch:
+            if auto_generate_query_filter:
+                get_query_filter(context)  # will raise an exception if configuration doesn't exist
+            elif not fetch_query_filter:
+                raise DemistoException(FETCH_QUERY_EXCEPTION_MSG)
+        try:
+            dateparser.parse(first_fetch_str).strftime(DATE_FORMAT)  # type: ignore
+        except AttributeError:
+            raise DemistoException("First fetch timestamp parameter is not in the correct format.")
+
+        client.test_connection()
+
+        return_results("ok")
+
+
+    def get_mapping_fields_command(client):
+        okta_fields = client.get_okta_fields()
+        incident_type_scheme = SchemeTypeMapping(type_name=IAMUserProfile.DEFAULT_INCIDENT_TYPE)
+
+        for field, description in okta_fields.items():
+            incident_type_scheme.add_field(field, description)
+
+        return GetMappingFieldsResponse([incident_type_scheme])
+
+
+    def get_user_command(client, args, mapper_in, mapper_out):
+        user_profile = IAMUserProfile(
+            user_profile=args.get("user-profile"), mapper=mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+        )
+        try:
+            iam_attr, iam_attr_value = user_profile.get_first_available_iam_user_attr(GET_USER_ATTRIBUTES)
+            okta_user = client.get_user(iam_attr, iam_attr_value)
+            if not okta_user:
+                error_code, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                user_profile.set_result(action=IAMActions.GET_USER, success=False, error_code=error_code, error_message=error_message)
+            else:
+                user_profile.update_with_app_data(okta_user, mapper_in)
+                user_profile.set_result(
+                    action=IAMActions.GET_USER,
+                    success=True,
+                    active=okta_user.get("status") != DEPROVISIONED_STATUS,
+                    iden=okta_user.get("id"),
+                    email=okta_user.get("profile", {}).get("email"),
+                    username=okta_user.get("profile", {}).get("login"),
+                    details=okta_user,
+                )
+
+        except Exception as e:
+            handle_exception(user_profile, e, IAMActions.GET_USER)
+
+        return user_profile
+
+
+    def disable_user_command(client, args, is_command_enabled, mapper_out):
+        user_profile = IAMUserProfile(
+            user_profile=args.get("user-profile"), mapper=mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+        )
+        okta_user = None
+        if not is_command_enabled:
+            user_profile.set_result(action=IAMActions.DISABLE_USER, skip=True, skip_reason="Command is disabled.")
+        else:
+            try:
+                iam_attr, iam_attr_value = user_profile.get_first_available_iam_user_attr(GET_USER_ATTRIBUTES)
+                okta_user = client.get_user(iam_attr, iam_attr_value)
+                if not okta_user:
+                    _, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                    user_profile.set_result(action=IAMActions.DISABLE_USER, skip=True, skip_reason=error_message)
+                else:
+                    client.deactivate_user(okta_user.get("id"))
+                    user_profile.set_result(
+                        action=IAMActions.DISABLE_USER,
+                        success=True,
+                        active=False,
+                        iden=okta_user.get("id"),
+                        email=okta_user.get("profile", {}).get("email"),
+                        username=okta_user.get("profile", {}).get("login"),
+                        details=okta_user,
+                    )
+
+            except Exception as e:
+                handle_exception(user_profile, e, IAMActions.DISABLE_USER, okta_user)
+
+        return user_profile
+
+
+    def create_user_command(client, args, mapper_out, is_command_enabled, is_update_user_enabled, is_enable_enabled):
+        user_profile = IAMUserProfile(
+            user_profile=args.get("user-profile"), mapper=mapper_out, incident_type=IAMUserProfile.CREATE_INCIDENT_TYPE
+        )
+        if not is_command_enabled:
+            user_profile.set_result(action=IAMActions.CREATE_USER, skip=True, skip_reason="Command is disabled.")
+        else:
+            try:
+                iam_attr, iam_attr_value = user_profile.get_first_available_iam_user_attr(GET_USER_ATTRIBUTES)
+                okta_user = client.get_user(iam_attr, iam_attr_value)
+                if okta_user:
+                    # if user exists, update its data
+                    return update_user_command(
+                        client,
+                        args,
+                        mapper_out,
+                        is_update_user_enabled,
+                        is_enable_enabled,
+                        is_create_user_enabled=False,
+                        create_if_not_exists=False,
+                    )
+                else:
+                    okta_profile = user_profile.map_object(mapper_out, incident_type=IAMUserProfile.CREATE_INCIDENT_TYPE)
+                    created_user = client.create_user(okta_profile)
+                    client.activate_user(created_user.get("id"))
+                    user_profile.set_result(
+                        action=IAMActions.CREATE_USER,
+                        success=True,
+                        active=created_user.get("status") != DEPROVISIONED_STATUS,
+                        iden=created_user.get("id"),
+                        email=created_user.get("profile", {}).get("email"),
+                        username=created_user.get("profile", {}).get("login"),
+                        details=created_user,
+                    )
+
+            except Exception as e:
+                handle_exception(user_profile, e, IAMActions.CREATE_USER)
+
+        return user_profile
+
+
+    def update_user_command(
+        client, args, mapper_out, is_command_enabled, is_enable_enabled, is_create_user_enabled, create_if_not_exists
+    ):
+        user_profile = IAMUserProfile(
+            user_profile=args.get("user-profile"), mapper=mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+        )
+        allow_enable = args.get("allow-enable") == "true"
+        if not is_command_enabled:
+            user_profile.set_result(action=IAMActions.UPDATE_USER, skip=True, skip_reason="Command is disabled.")
+        else:
+            try:
+                iam_attr, iam_attr_value = user_profile.get_first_available_iam_user_attr(GET_USER_ATTRIBUTES, use_old_user_data=True)
+                okta_user = client.get_user(iam_attr, iam_attr_value)
+                if okta_user:
+                    user_id = okta_user.get("id")
+
+                    if allow_enable and is_enable_enabled and okta_user.get("status") == DEPROVISIONED_STATUS:
+                        client.activate_user(user_id)
+                        user_profile.set_result(
+                            action=IAMActions.ENABLE_USER,
+                            success=True,
+                            active=True,
+                            iden=okta_user.get("id"),
+                            email=okta_user.get("profile", {}).get("email"),
+                            username=okta_user.get("profile", {}).get("login"),
+                            details=okta_user,
+                        )
+                    else:
+                        okta_profile = user_profile.map_object(mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE)
+                        updated_user = client.update_user(user_id, okta_profile)
+                        user_profile.set_result(
+                            action=IAMActions.UPDATE_USER,
+                            success=True,
+                            active=okta_user.get("status") != DEPROVISIONED_STATUS,
+                            iden=updated_user.get("id"),
+                            email=updated_user.get("profile", {}).get("email"),
+                            username=updated_user.get("profile", {}).get("login"),
+                            details=updated_user,
+                        )
+                else:
+                    if create_if_not_exists:
+                        return create_user_command(client, args, mapper_out, is_create_user_enabled, False, False)
+                    else:
+                        _, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                        user_profile.set_result(action=IAMActions.UPDATE_USER, skip=True, skip_reason=error_message)
+
+            except Exception as e:
+                handle_exception(user_profile, e, IAMActions.UPDATE_USER)
+
+        return user_profile
+
+
+    def get_app_user_assignment_command(client, args):
+        user_id = args.get("user_id")
+        application_id = args.get("application_id")
+
+        res = client.get_app_user_assignment(application_id, user_id)
+        raw_response = res.json()
+
+        is_user_assigned_to_app = res.status_code == 200
+
+        outputs = {"UserID": user_id, "AppID": application_id, "IsAssigned": is_user_assigned_to_app}
+
+        readable_output = tableToMarkdown(
+            "App User Assignment", outputs, headers=["UserID", "AppID", "IsAssigned"], headerTransform=pascalToSpace
+        )
+
+        if is_user_assigned_to_app:
+            outputs["ProfileInApp"] = raw_response.get("profile")
+            profile_readable = tableToMarkdown("Profile in App", raw_response.get("profile"), removeNull=True)
+            readable_output += f"\n{profile_readable}"
+
+        return CommandResults(
+            outputs=outputs,
+            outputs_prefix="Okta.AppUserAssignment",
+            outputs_key_field=["UserID", "AppID"],
+            readable_output=readable_output,
+            raw_response=raw_response,
+        )
+
+
+    def list_apps_command(client, args):
+        query = args.get("query")
+        page = int(args.get("page"))
+        limit = min(int(args.get("limit")), 200)
+
+        applications = client.list_apps(query, page, limit)
+
+        outputs = []
+
+        for app in applications:
+            outputs.append(
+                {
+                    "ID": app.get("id"),
+                    "Name": app.get("name"),
+                    "Label": app.get("label"),
+                    "Logo": f"![]({app.get('_links', {}).get('logo', [{}])[0].get('href')})",
+                }
+            )
+
+        title = "Okta Applications"
+
+        if applications:
+            from_idx = page * limit + 1
+            to_idx = from_idx + len(applications) - 1
+            title += f" ({from_idx} - {to_idx})"
+
+        return CommandResults(
+            outputs=outputs,
+            outputs_prefix="Okta.Application",
+            outputs_key_field="ID",
+            readable_output=tableToMarkdown(title, outputs, headers=["ID", "Name", "Label", "Logo"]),
+        )
+
+
+    def list_user_apps_command(client, args):
+        user_id = args.get("user_id")
+        applications = client.list_user_apps(user_id)
+        outputs = []
+
+        for app in applications:
+            outputs.append({"ID": app.get("id"), "Name": app.get("name"), "Label": app.get("label"), "Status": app.get("status")})
+
+        title = "Okta User Applications"
+        return CommandResults(
+            outputs=outputs,
+            outputs_prefix="Okta.Application",
+            outputs_key_field="ID",
+            readable_output=tableToMarkdown(title, outputs, headers=["ID", "Name", "Label", "Status"]),
+        )
+
+
+    def get_configuration(context):
+        iam_configuration = context.get("IAMConfiguration", [])
+
+        return CommandResults(
+            outputs=iam_configuration,
+            outputs_prefix="Okta.IAMConfiguration",
+            outputs_key_field="ApplicationID",
+            readable_output=tableToMarkdown("Okta IAM Configuration", iam_configuration),
+        )
+
+
+    def set_configuration(args):
+        iam_configuration = json.loads(args.get("configuration"))
+        context = {"IAMConfiguration": iam_configuration}
+        return context
+
+
+    def fetch_incidents(client, last_run, first_fetch_str, fetch_limit, query_filter=None, auto_generate_filter=False, context=None):
+        """If no events were saved from last run, returns new events from Okta's /log API. Otherwise,
+        returns the events from last run. In both cases, no more than `fetch_limit` incidents will be returned,
+        and the rest of them will be saved for next run.
+
+            Args:
+                client: (BaseClient) Okta client.
+                last_run: (dict) The "last run" object that was set on the previous run.
+                first_fetch_str: (str) First fetch time parameter (e.g. "1 day", "2 months", etc).
+                fetch_limit: (int) Maximum number of incidents to return.
+                query_filter: (str) Logs API query filter.
+                auto_generate_filter: (bool) Whether or not to automatically generate the query filter.
+                context: (dict) Integration Context object.
+            Returns:
+                incidents: (dict) Incidents/events that will be created in Cortex XSOAR
+                next_run: (dict) The "last run" object for the next run.
+        """
+
+        incidents = last_run.get("incidents", [])
+        last_run_full_url = last_run.get("last_run_full_url")
+
+        first_fetch_date = dateparser.parse(first_fetch_str)
+        assert first_fetch_date is not None, f"could not parse {first_fetch_str}"
+        first_fetch = first_fetch_date.strftime(DATE_FORMAT)
+        last_run_time = last_run.get("last_run_time", first_fetch)  # if last_run_time is undefined, use first_fetch
+        time_now = datetime.now().strftime(DATE_FORMAT)
+
+        demisto.debug(f"Okta: Fetching logs from {last_run_time} to {time_now}.")
+        if not incidents:
+            email_to_user_profile = get_all_user_profiles()
+
+            log_events, last_run_full_url = client.get_logs(
+                last_run_full_url, last_run_time, time_now, query_filter, auto_generate_filter, context
+            )
+            for entry in log_events:
+                if not should_drop_event(entry, email_to_user_profile):
+                    add_user_profile_data_to_entry(entry, email_to_user_profile)
+                    incident = {"rawJSON": json.dumps(entry)}
+                    incidents.append(incident)
+
+        next_run = {"incidents": incidents[fetch_limit:], "last_run_time": time_now, "last_run_full_url": last_run_full_url}
+
+        return incidents[:fetch_limit], next_run
+
+
+    class OutputContext:
+        """
+        Class to build a generic output and context.
+        """
+
+        def __init__(
+            self,
+            success=None,
+            active=None,
+            id=None,
+            username=None,
+            email=None,
+            errorCode=None,
+            errorMessage=None,
+            details=None,
+            displayName=None,
+            members=None,
+        ):
+            self.instanceName = demisto.callingContext["context"]["IntegrationInstance"]
+            self.brand = demisto.callingContext["context"]["IntegrationBrand"]
+            self.command = demisto.command().replace("-", "_").title().replace("_", "")
+            self.success = success
+            self.active = active
+            self.id = id
+            self.username = username
+            self.email = email
+            self.errorCode = errorCode
+            self.errorMessage = errorMessage
+            self.details = details
+            self.displayName = displayName  # Used in group
+            self.members = members  # Used in group
+            self.data = {
+                "brand": self.brand,
+                "instanceName": self.instanceName,
+                "success": success,
+                "active": active,
+                "id": id,
+                "username": username,
+                "email": email,
+                "errorCode": errorCode,
+                "errorMessage": errorMessage,
+                "details": details,
+                "displayName": displayName,
+                "members": members,
+            }
+            # Remoove empty values
+            self.data = {k: v for k, v in self.data.items() if v is not None}
+
+
+    def get_group_command(client, args):
+        scim = safe_load_json(args.get("scim"))
+        group_id = scim.get("id")
+        group_name = scim.get("displayName")
+
+        if not (group_id or group_name):
+            return_error("You must supply either 'id' or 'displayName' in the scim data")
+
+        group_search_result = None
+        if not group_id:
+            res = client.search_group(group_name)
+            res_json = res.json()
+
+            if res.status_code == 200:
+                if len(res_json) < 1:
+                    generic_iam_context = OutputContext(
+                        success=False, displayName=group_name, errorCode=404, errorMessage="Group Not Found", details=res_json
+                    )
+                else:
+                    generic_iam_context = OutputContext()
+                    group_search_result = res_json
+            else:
+                generic_iam_context = OutputContext(
+                    success=False,
+                    displayName=group_name,
+                    id=group_id,
+                    errorCode=res_json.get("errorCode"),
+                    errorMessage=res_json.get("errorSummary"),
+                    details=res_json,
+                )
+
+            if not group_search_result:
+                return CommandResults(
+                    raw_response=generic_iam_context.data,
+                    outputs_prefix=generic_iam_context.command,
+                    outputs_key_field="id",
+                    outputs=generic_iam_context.data,
+                    readable_output=tableToMarkdown("Okta Get Group:", generic_iam_context.data, removeNull=True),
+                )
+
+        if group_search_result and len(group_search_result) > 1:
+            generic_iam_context_data_list = []
+
+            for group in group_search_result:
+                group_name = group.get("profile", {}).get("name")
+                generic_iam_context = OutputContext(success=True, id=group.get("id"), displayName=group_name)
+                generic_iam_context_data_list.append(generic_iam_context.data)
+
+            return CommandResults(
+                raw_response=generic_iam_context_data_list,
+                outputs_prefix=generic_iam_context.command,
+                outputs_key_field="id",
+                outputs=generic_iam_context_data_list,
+                readable_output=tableToMarkdown("Okta Get Group:", generic_iam_context_data_list, removeNull=True),
+            )
+        elif not group_id and isinstance(group_search_result, list):
+            group_id = group_search_result[0].get("id")
+
+        res = client.get_group_by_id(group_id)
+        res_json = res.json()
+        if res.status_code == 200:
+            group_member_profiles = []
+            include_members = args.get("includeMembers")
+            if include_members.lower() == "true":
+                group_members = client.get_group_members(group_id)
+                for member in group_members:
+                    if member.get("status") != DEPROVISIONED_STATUS:
+                        profile = member.get("profile", {})
+                        group_member_profile = {"value": member.get("id"), "display": profile.get("login")}
+                        group_member_profiles.append(group_member_profile)
+            generic_iam_context = OutputContext(
+                success=True,
+                id=res_json.get("id"),
+                displayName=res_json.get("profile", {}).get("name"),
+                members=group_member_profiles,
+            )
+        elif res.status_code == 404:
+            generic_iam_context = OutputContext(
+                success=False, displayName=group_name, id=group_id, errorCode=404, errorMessage="Group Not Found", details=res_json
+            )
+        else:
+            generic_iam_context = OutputContext(
+                success=False,
+                displayName=group_name,
+                id=group_id,
+                errorCode=res_json.get("errorCode"),
+                errorMessage=res_json.get("errorSummary"),
+                details=res_json,
+            )
+
+        return CommandResults(
+            raw_response=generic_iam_context.data,
+            outputs_prefix=generic_iam_context.command,
+            outputs_key_field="id",
+            outputs=generic_iam_context.data,
+            readable_output=tableToMarkdown("Okta Get Group:", generic_iam_context.data, removeNull=True),
+        )
+
+
+    def get_logs_command(client, args):
+        filter = args.get("filter")
+        since = args.get("since")
+        until = args.get("until")
+        limit = args.get("limit")
+        log_events, _ = client.get_logs(query_filter=filter, last_run_time=since, time_now=until, limit=limit)
+
+        if not log_events:
+            return CommandResults(readable_output="No logs found.", outputs={}, raw_response=log_events)
+
+        return CommandResults(
+            raw_response=log_events,
+            outputs_prefix="Okta.Logs.Events",
+            outputs_key_field="uuid",
+            outputs=log_events,
+            readable_output=tableToMarkdown("Okta Log Events:", log_events),
+        )
+
+
+    def main():
+        user_profile = None
+        params = demisto.params()
+        base_url = urljoin(params["url"].strip("/"), "/api/v1/")
+        token = params.get("credentials", {}).get("password", "") or params.get("apitoken", "")
+
+        if not token:
+            raise ValueError("Missing API token.")
+
+        mapper_in = params.get("mapper-in")
+        mapper_out = params.get("mapper-out")
+        verify_certificate = not params.get("insecure", False)
+        proxy = params.get("proxy", False)
+        command = demisto.command()
+        args = demisto.args()
+
+        is_create_enabled = params.get("create-user-enabled")
+        is_enable_enabled = params.get("enable-user-enabled")
+        is_disable_enabled = params.get("disable-user-enabled")
+        is_update_enabled = demisto.params().get("update-user-enabled")
+        create_if_not_exists = demisto.params().get("create-if-not-exists")
+
+        is_fetch = params.get("isFetch")
+        first_fetch_str = params.get("first_fetch")
+        fetch_limit = int(params.get("max_fetch", 1))
+        auto_generate_query_filter = params.get("auto_generate_query_filter")
+        fetch_query_filter = params.get("fetch_query_filter")
+        context = demisto.getIntegrationContext()
+
+        headers = {"Content-Type": "application/json", "Accept": "application/json", "Authorization": f"SSWS {token}"}
+
+        client = Client(base_url=base_url, verify=verify_certificate, proxy=proxy, headers=headers, ok_codes=(200,))
+
+        demisto.debug(f"Command being called is {command}")
+
+        if command == "iam-get-user":
+            user_profile = get_user_command(client, args, mapper_in, mapper_out)
+
+        elif command == "iam-create-user":
+            user_profile = create_user_command(client, args, mapper_out, is_create_enabled, is_update_enabled, is_enable_enabled)
+
+        elif command == "iam-update-user":
+            user_profile = update_user_command(
+                client, args, mapper_out, is_update_enabled, is_enable_enabled, is_create_enabled, create_if_not_exists
+            )
+
+        elif command == "iam-disable-user":
+            user_profile = disable_user_command(client, args, is_disable_enabled, mapper_out)
+
+        if user_profile:
+            return_results(user_profile)
+
+        try:
+            if command == "test-module":
+                test_module(client, is_fetch, fetch_query_filter, auto_generate_query_filter, context, first_fetch_str)
+
+            elif command == "get-mapping-fields":
+                return_results(get_mapping_fields_command(client))
+
+            elif command == "okta-get-app-user-assignment":
+                return_results(get_app_user_assignment_command(client, args))
+
+            elif command == "okta-iam-list-applications":
+                return_results(list_apps_command(client, args))
+
+            elif command == "okta-iam-list-user-applications":
+                return_results(list_user_apps_command(client, args))
+
+            elif command == "okta-iam-get-configuration":
+                return_results(get_configuration(context))
+
+            elif command == "okta-iam-set-configuration":
+                context = set_configuration(args)
+                demisto.setIntegrationContext(context)
+
+            elif command == "iam-get-group":
+                return_results(get_group_command(client, args))
+
+            elif command == "okta-get-logs":
+                return_results(get_logs_command(client, args))
+
+            elif command == "fetch-incidents":
+                last_run = demisto.getLastRun()
+                context = demisto.getIntegrationContext()
+                incidents, next_run = fetch_incidents(
+                    client, last_run, first_fetch_str, fetch_limit, fetch_query_filter, auto_generate_query_filter, context
+                )
+                demisto.incidents(incidents)
+                demisto.setLastRun(next_run)
+
+        except Exception as e:
+            # For any other integration command exception, return an error
+            return_error(f"Failed to execute {command} command. Error: {e!s}")
+
+
+
+    ### GENERATED CODE ###: from IAMApiModule import *  # noqa: E402
+    # This code was inserted in place of an API module.
+    register_module_line('IAMApiModule', 'start', __line__(), wrapper=-3)
+
+
+
+
+
+
+    class IAMErrors:
+        """
+        An enum class to manually handle errors in IAM integrations
+        :return: None
+        :rtype: ``None``
+        """
+
+        BAD_REQUEST = 400, "Bad request - failed to perform operation"
+        USER_DOES_NOT_EXIST = 404, "User does not exist"
+        USER_ALREADY_EXISTS = 409, "User already exists"
+
+
+    class IAMActions:
+        """
+        Enum: contains all the IAM actions (e.g. get, update, create, etc.)
+        :return: None
+        :rtype: ``None``
+        """
+
+        GET_USER = "get"
+        UPDATE_USER = "update"
+        CREATE_USER = "create"
+        DISABLE_USER = "disable"
+        ENABLE_USER = "enable"
+
+
+    class IAMVendorActionResult:
+        """This class is used in IAMUserProfile class to represent actions data.
+        :return: None
+        :rtype: ``None``
+        """
+
+        def __init__(
+            self,
+            success=True,
+            active=None,
+            iden=None,
+            username=None,
+            email=None,
+            error_code=None,
+            error_message=None,
+            details=None,
+            skip=False,
+            skip_reason=None,
+            action=None,
+            return_error=False,
+        ):
+            """Sets the outputs and readable outputs attributes according to the given arguments.
+
+            :param success: (bool) whether or not the command succeeded.
+            :param active:  (bool) whether or not the user status is active.
+            :param iden: (str) the user ID.
+            :param username: (str) the username of the user.
+            :param email:  (str) the email of the user.
+            :param error_code: (str or int) the error code of the response, if exists.
+            :param error_message: (str) the error details of the response, if exists.
+            :param details: (dict) the full response.
+            :param skip: (bool) whether or not the command is skipped.
+            :param skip_reason: (str) If the command is skipped, describes the reason.
+            :param action: (IAMActions) An enum object represents the action taken (get, update, create, etc).
+            :param return_error: (bool) Whether or not to return an error entry.
+            """
+            self._brand = demisto.callingContext.get("context", {}).get("IntegrationBrand")
+            self._instance_name = demisto.callingContext.get("context", {}).get("IntegrationInstance")
+            self._success = success
+            self._active = active
+            self._iden = iden
+            self._username = username
+            self._email = email
+            self._error_code = error_code
+            self._error_message = error_message
+            self._details = details
+            self._skip = skip
+            self._skip_reason = skip_reason
+            self._action = action
+            self._return_error = return_error
+
+        def should_return_error(self):
+            return self._return_error
+
+        def create_outputs(self):
+            """Sets the outputs in `_outputs` attribute."""
+            outputs = {
+                "brand": self._brand,
+                "instanceName": self._instance_name,
+                "action": self._action,
+                "success": self._success,
+                "active": self._active,
+                "id": self._iden,
+                "username": self._username,
+                "email": self._email,
+                "errorCode": self._error_code,
+                "errorMessage": self._error_message,
+                "details": self._details,
+                "skipped": self._skip,
+                "reason": self._skip_reason,
+            }
+            return outputs
+
+        def create_readable_outputs(self, outputs):
+            """Sets the human readable output in `_readable_output` attribute.
+
+            :param outputs: (dict) the command outputs.
+            """
+            title = self._action.title() + f" User Results ({self._brand})"
+
+            if not self._skip:
+                headers = [
+                    "brand",
+                    "instanceName",
+                    "success",
+                    "active",
+                    "id",
+                    "username",
+                    "email",
+                    "errorCode",
+                    "errorMessage",
+                    "details",
+                ]
+            else:
+                headers = ["brand", "instanceName", "skipped", "reason"]
+
+            readable_output = tableToMarkdown(name=title, t=outputs, headers=headers, removeNull=True)
+
+            return readable_output
+
+
+    class IAMUserProfile:
+        """A User Profile object class for IAM integrations.
+
+        :type _user_profile: ``str``
+        :param _user_profile: The user profile information.
+
+        :type _user_profile_delta: ``str``
+        :param _user_profile_delta: The user profile delta.
+
+        :type _vendor_action_results: ``list``
+        :param _vendor_action_results: A List of data returned from the vendor.
+
+        :return: None
+        :rtype: ``None``
+        """
+
+        DEFAULT_INCIDENT_TYPE = "User Profile"
+        CREATE_INCIDENT_TYPE = "User Profile - Create"
+        UPDATE_INCIDENT_TYPE = "User Profile - Update"
+        DISABLE_INCIDENT_TYPE = "User Profile - Disable"
+        ENABLE_INCIDENT_TYPE = "User Profile - Enable"
+
+        def __init__(self, user_profile, mapper: str, incident_type: str, user_profile_delta=None):
+            self._user_profile = safe_load_json(user_profile)
+            # Mapping is added here for GET USER commands, where we need to map Cortex XSOAR fields to the given app fields.
+            self.mapped_user_profile = None
+            self.mapped_user_profile = self.map_object(mapper, incident_type, map_old_data=True) if mapper else self._user_profile
+            self._user_profile_delta = safe_load_json(user_profile_delta) if user_profile_delta else {}
+            self._vendor_action_results: List = []
+
+        def get_attribute(self, item, use_old_user_data=False, user_profile_data: Optional[Dict] = None):
+            user_profile = user_profile_data if user_profile_data else self._user_profile
+            if use_old_user_data and user_profile.get("olduserdata", {}).get(item):
+                return user_profile.get("olduserdata", {}).get(item)
+            return user_profile.get(item)
+
+        def to_entry(self):
+            """Generates a XSOAR IAM entry from the data in _vendor_action_results.
+            Note: Currently we are using only the first element of the list, in the future we will support multiple results.
+
+            :return: A XSOAR entry.
+            :rtype: ``dict``
+            """
+
+            outputs = self._vendor_action_results[0].create_outputs()
+            readable_output = self._vendor_action_results[0].create_readable_outputs(outputs)
+
+            entry_context = {
+                "IAM.UserProfile(val.email && val.email == obj.email)": self._user_profile,
+                "IAM.Vendor(val.instanceName && val.instanceName == obj.instanceName && "
+                "val.email && val.email == obj.email)": outputs,
+            }
+
+            return_entry = {"ContentsFormat": EntryFormat.JSON, "Contents": outputs, "EntryContext": entry_context}
+
+            if self._vendor_action_results[0].should_return_error():
+                return_entry["Type"] = EntryType.ERROR
+            else:
+                return_entry["Type"] = EntryType.NOTE
+                return_entry["HumanReadable"] = readable_output
+
+            return return_entry
+
+        def return_outputs(self):
+            return_results(self.to_entry())
+
+        def set_result(
+            self,
+            success=True,
+            active=None,
+            iden=None,
+            username=None,
+            email=None,
+            error_code=None,
+            error_message=None,
+            details=None,
+            skip=False,
+            skip_reason=None,
+            action=None,
+            return_error=False,
+        ):
+            """Sets the outputs and readable outputs attributes according to the given arguments.
+
+            :param success: (bool) whether or not the command succeeded.
+            :param active:  (bool) whether or not the user status is active.
+            :param iden: (str) the user ID.
+            :param username: (str) the username of the user.
+            :param email:  (str) the email of the user.
+            :param error_code: (str or int) the error code of the response, if exists.
+            :param error_message: (str) the error details of the response, if exists.
+            :param details: (dict) the full response.
+            :param skip: (bool) whether or not the command is skipped.
+            :param skip_reason: (str) If the command is skipped, describes the reason.
+            :param action: (IAMActions) An enum object represents the action taken (get, update, create, etc).
+            :param return_error: (bool) Whether or not to return an error entry.
+            """
+            if not email:
+                email = self.get_attribute("email")
+
+            if not details:
+                details = self.mapped_user_profile
+
+            vendor_action_result = IAMVendorActionResult(
+                success=success,
+                active=active,
+                iden=iden,
+                username=username,
+                email=email,
+                error_code=error_code,
+                error_message=error_message if error_message else "",
+                details=details,
+                skip=skip,
+                skip_reason=skip_reason if skip_reason else "",
+                action=action,
+                return_error=return_error,
+            )
+
+            self._vendor_action_results.append(vendor_action_result)
+
+        def map_object(self, mapper_name, incident_type, map_old_data: bool = False):
+            """Returns the user data, in an application data format.
+
+            :type mapper_name: ``str``
+            :param mapper_name: The outgoing mapper from XSOAR to the application.
+
+            :type incident_type: ``str``
+            :param incident_type: The incident type used.
+
+            :type map_old_data ``bool``
+            :param map_old_data: Whether to map old data as well.
+
+            :return: the user data, in the app data format.
+            :rtype: ``dict``
+            """
+            if self.mapped_user_profile:
+                if not map_old_data:
+                    return {k: v for k, v in self.mapped_user_profile.items() if k != "olduserdata"}
+                return self.mapped_user_profile
+            if incident_type not in [
+                IAMUserProfile.CREATE_INCIDENT_TYPE,
+                IAMUserProfile.UPDATE_INCIDENT_TYPE,
+                IAMUserProfile.DISABLE_INCIDENT_TYPE,
+                IAMUserProfile.ENABLE_INCIDENT_TYPE,
+            ]:
+                raise DemistoException("You must provide a valid incident type to the map_object function.")
+            if not self._user_profile:
+                raise DemistoException("You must provide the user profile data.")
+            app_data = demisto.mapObject(self._user_profile, mapper_name, incident_type)
+            if map_old_data and "olduserdata" in self._user_profile:
+                app_data["olduserdata"] = demisto.mapObject(self._user_profile.get("olduserdata", {}), mapper_name, incident_type)
+            return app_data
+
+        def update_with_app_data(self, app_data, mapper_name, incident_type=None):
+            """updates the user_profile attribute according to the given app_data
+
+            :type app_data: ``dict``
+            :param app_data: The user data in app
+
+            :type mapper_name: ``str``
+            :param mapper_name: Incoming mapper name
+
+            :type incident_type: ``str``
+            :param incident_type: Optional - incident type
+            """
+            if not incident_type:
+                incident_type = IAMUserProfile.DEFAULT_INCIDENT_TYPE
+            if not isinstance(app_data, dict):
+                app_data = safe_load_json(app_data)
+            self._user_profile = demisto.mapObject(app_data, mapper_name, incident_type)
+
+        def get_first_available_iam_user_attr(self, iam_attrs: List[str], use_old_user_data: bool = False):
+            # Special treatment for ID field, because he is not included in outgoing mappers.
+            for iam_attr in iam_attrs:
+                # Special treatment for ID field, because he is not included in outgoing mappers.
+                if iam_attr == "id" and (attr_value := self.get_attribute(iam_attr, use_old_user_data)):
+                    return iam_attr, attr_value
+                if attr_value := self.get_attribute(iam_attr, use_old_user_data, self.mapped_user_profile):
+                    # Special treatment for emails, as mapper maps it to a list object.
+                    if iam_attr == "emails" and not isinstance(attr_value, str):
+                        if isinstance(attr_value, dict):
+                            attr_value = attr_value.get("value")
+                        elif isinstance(attr_value, list):
+                            if not attr_value:
+                                continue
+                            attr_value = next(
+                                (email.get("value") for email in attr_value if email.get("primary", False)),
+                                attr_value[0].get("value", ""),
+                            )
+                    return iam_attr, attr_value
+
+            raise DemistoException(
+                "Your user profile argument must contain at least one attribute that is mapped into one"
+                f" of the following attributes in the outgoing mapper: {iam_attrs}"
+            )
+
+        def set_user_is_already_disabled(self, details):
+            self.set_result(action=IAMActions.DISABLE_USER, skip=True, skip_reason="User is already disabled.", details=details)
+
+        def set_user_is_already_enabled(self, details):
+            self.set_result(action=IAMActions.ENABLE_USER, skip=True, skip_reason="User is already enabled.", details=details)
+
+
+    class IAMUserAppData:
+        """Holds user attributes retrieved from an application.
+
+        :type id: ``str``
+        :param id: The ID of the user.
+
+        :type username: ``str``
+        :param username: The username of the user.
+
+        :type is_active: ``bool``
+        :param is_active: Whether or not the user is active in the application.
+
+        :type full_data: ``dict``
+        :param full_data: The full data of the user in the application.
+
+        :return: None
+        :rtype: ``None``
+        """
+
+        def __init__(self, user_id, username, is_active, app_data, email=None):
+            self.id = user_id
+            self.username = username
+            self.is_active = is_active
+            self.full_data = app_data
+            self.email = email
+
+
+    class IAMCommand:
+        """A class that implements the IAM CRUD commands - should be used.
+
+        :type id: ``str``
+        :param id: The ID of the user.
+
+        :type username: ``str``
+        :param username: The username of the user.
+
+        :type is_active: ``bool``
+        :param is_active: Whether or not the user is active in the application.
+
+        :type full_data: ``dict``
+        :param full_data: The full data of the user in the application.
+
+        :return: None
+        :rtype: ``None``
+        """
+
+        def __init__(
+            self,
+            is_create_enabled=True,
+            is_enable_enabled=True,
+            is_disable_enabled=True,
+            is_update_enabled=True,
+            create_if_not_exists=True,
+            mapper_in=None,
+            mapper_out=None,
+            get_user_iam_attrs=None,
+        ):
+            """The IAMCommand c'tor
+
+            :param is_create_enabled: (bool) Whether or not to allow creating users in the application.
+            :param is_enable_enabled: (bool) Whether or not to allow enabling users in the application.
+            :param is_disable_enabled: (bool) Whether or not to allow disabling users in the application.
+            :param is_update_enabled: (bool) Whether or not to allow updating users in the application.
+            :param create_if_not_exists: (bool) Whether or not to create a user if does not exist in the application.
+            :param mapper_in: (str) Incoming mapper from the application to Cortex XSOAR
+            :param mapper_out: (str) Outgoing mapper from the Cortex XSOAR to the application
+            :param get_user_iam_attrs (List[str]): List of IAM attributes supported by integration by precedence
+                                                            order to get user details.
+            """
+            if get_user_iam_attrs is None:
+                get_user_iam_attrs = ["email"]
+            self.is_create_enabled = is_create_enabled
+            self.is_enable_enabled = is_enable_enabled
+            self.is_disable_enabled = is_disable_enabled
+            self.is_update_enabled = is_update_enabled
+            self.create_if_not_exists = create_if_not_exists
+            self.mapper_in = mapper_in
+            self.mapper_out = mapper_out
+            self.get_user_iam_attrs = get_user_iam_attrs
+
+        def get_user(self, client, args):
+            """Searches a user in the application and updates the user profile object with the data.
+                If not found, the error details will be resulted instead.
+            :param client: (Client) The integration Client object that implements a get_user() method
+            :param args: (dict) The `iam-get-user` command arguments
+            :return: (IAMUserProfile) The user profile object.
+            """
+            user_profile = IAMUserProfile(
+                user_profile=args.get("user-profile"), mapper=self.mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+            )
+            try:
+                iam_attribute, iam_attribute_val = user_profile.get_first_available_iam_user_attr(self.get_user_iam_attrs)
+                user_app_data = client.get_user(iam_attribute, iam_attribute_val)
+                if not user_app_data:
+                    error_code, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                    user_profile.set_result(
+                        action=IAMActions.GET_USER, success=False, error_code=error_code, error_message=error_message
+                    )
+                else:
+                    user_profile.update_with_app_data(user_app_data.full_data, self.mapper_in)
+                    user_profile.set_result(
+                        action=IAMActions.GET_USER,
+                        active=user_app_data.is_active,
+                        iden=user_app_data.id,
+                        email=user_profile.get_attribute("email") or user_app_data.email,
+                        username=user_app_data.username,
+                        details=user_app_data.full_data,
+                    )
+
+            except Exception as e:
+                client.handle_exception(user_profile, e, IAMActions.GET_USER)
+
+            return user_profile
+
+        def disable_user(self, client, args):
+            """Disables a user in the application and updates the user profile object with the updated data.
+                If not found, the command will be skipped.
+
+            :param client: (Client) The integration Client object that implements get_user() and disable_user() methods
+            :param args: (dict) The `iam-disable-user` command arguments
+            :return: (IAMUserProfile) The user profile object.
+            """
+            user_profile = IAMUserProfile(
+                user_profile=args.get("user-profile"), mapper=self.mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+            )
+            if not self.is_disable_enabled:
+                user_profile.set_result(action=IAMActions.DISABLE_USER, skip=True, skip_reason="Command is disabled.")
+            else:
+                try:
+                    iam_attribute, iam_attribute_val = user_profile.get_first_available_iam_user_attr(self.get_user_iam_attrs)
+                    user_app_data = client.get_user(iam_attribute, iam_attribute_val)
+                    if not user_app_data:
+                        _, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                        user_profile.set_result(action=IAMActions.DISABLE_USER, skip=True, skip_reason=error_message)
+                    else:
+                        if user_app_data.is_active:
+                            disabled_user = client.disable_user(user_app_data.id)
+                            user_profile.set_result(
+                                action=IAMActions.DISABLE_USER,
+                                active=False,
+                                iden=disabled_user.id,
+                                email=user_profile.get_attribute("email") or user_app_data.email,
+                                username=disabled_user.username,
+                                details=disabled_user.full_data,
+                            )
+                        else:
+                            user_profile.set_user_is_already_disabled(user_app_data.full_data)
+
+                except Exception as e:
+                    client.handle_exception(user_profile, e, IAMActions.DISABLE_USER)
+
+            return user_profile
+
+        def enable_user(self, client, args):
+            """Enables a user in the application and updates the user profile object with the updated data.
+                If not found, the command will be skipped.
+
+            :param client: (Client) The integration Client object that implements get_user(),
+                                    enable_user() and handle_exception methods
+            :param args: (dict) The `iam-enable-user` command arguments
+            :return: (IAMUserProfile) The user profile object.
+            """
+            user_profile = IAMUserProfile(
+                user_profile=args.get("user-profile"), mapper=self.mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+            )
+            if not self.is_enable_enabled:
+                user_profile.set_result(action=IAMActions.ENABLE_USER, skip=True, skip_reason="Command is disabled.")
+            else:
+                try:
+                    iam_attribute, iam_attribute_val = user_profile.get_first_available_iam_user_attr(self.get_user_iam_attrs)
+                    user_app_data = client.get_user(iam_attribute, iam_attribute_val)
+                    if not user_app_data:
+                        _, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                        user_profile.set_result(action=IAMActions.ENABLE_USER, skip=True, skip_reason=error_message)
+                    else:
+                        if not user_app_data.is_active:
+                            enabled_user = client.enable_user(user_app_data.id)
+                            user_profile.set_result(
+                                action=IAMActions.ENABLE_USER,
+                                active=True,
+                                iden=enabled_user.id,
+                                email=user_profile.get_attribute("email") or user_app_data.email,
+                                username=enabled_user.username,
+                                details=enabled_user.full_data,
+                            )
+                        else:
+                            user_profile.set_user_is_already_enabled(user_app_data.full_data)
+
+                except Exception as e:
+                    client.handle_exception(user_profile, e, IAMActions.ENABLE_USER)
+
+            return user_profile
+
+        def create_user(self, client, args):
+            """Creates a user in the application and updates the user profile object with the data.
+                If a user in the app already holds the email in the given user profile, updates
+                its data with the given data.
+
+            :param client: (Client) A Client object that implements get_user(), create_user() and update_user() methods
+            :param args: (dict) The `iam-create-user` command arguments
+            :return: (IAMUserProfile) The user profile object.
+            """
+            user_profile = IAMUserProfile(
+                user_profile=args.get("user-profile"), mapper=self.mapper_out, incident_type=IAMUserProfile.CREATE_INCIDENT_TYPE
+            )
+            if not self.is_create_enabled:
+                user_profile.set_result(action=IAMActions.CREATE_USER, skip=True, skip_reason="Command is disabled.")
+            else:
+                try:
+                    iam_attribute, iam_attribute_val = user_profile.get_first_available_iam_user_attr(self.get_user_iam_attrs)
+                    user_app_data = client.get_user(iam_attribute, iam_attribute_val)
+                    if user_app_data:
+                        # if user exists, update it
+                        user_profile = self.update_user(client, args)
+
+                    else:
+                        app_profile = user_profile.map_object(self.mapper_out, IAMUserProfile.CREATE_INCIDENT_TYPE)
+                        created_user = client.create_user(app_profile)
+                        user_profile.set_result(
+                            action=IAMActions.CREATE_USER,
+                            active=created_user.is_active,
+                            iden=created_user.id,
+                            email=user_profile.get_attribute("email") or created_user.email,
+                            username=created_user.username,
+                            details=created_user.full_data,
+                        )
+
+                except Exception as e:
+                    client.handle_exception(user_profile, e, IAMActions.CREATE_USER)
+
+            return user_profile
+
+        def update_user(self, client, args):
+            """Creates a user in the application and updates the user profile object with the data.
+                If the user is disabled and `allow-enable` argument is `true`, also enables the user.
+                If the user does not exist in the app and the `create-if-not-exist` parameter is checked, creates the user.
+
+            :param client: (Client) A Client object that implements get_user(), create_user() and update_user() methods
+            :param args: (dict) The `iam-update-user` command arguments
+            :return: (IAMUserProfile) The user profile object.
+            """
+            user_profile = IAMUserProfile(
+                user_profile=args.get("user-profile"), mapper=self.mapper_out, incident_type=IAMUserProfile.UPDATE_INCIDENT_TYPE
+            )
+            allow_enable = args.get("allow-enable") == "true" and self.is_enable_enabled
+            if not self.is_update_enabled:
+                user_profile.set_result(action=IAMActions.UPDATE_USER, skip=True, skip_reason="Command is disabled.")
+            else:
+                try:
+                    iam_attribute, iam_attribute_val = user_profile.get_first_available_iam_user_attr(
+                        self.get_user_iam_attrs, use_old_user_data=True
+                    )
+                    user_app_data = client.get_user(iam_attribute, iam_attribute_val)
+                    if user_app_data:
+                        app_profile = user_profile.map_object(self.mapper_out, IAMUserProfile.UPDATE_INCIDENT_TYPE)
+
+                        if allow_enable and not user_app_data.is_active:
+                            client.enable_user(user_app_data.id)
+
+                        updated_user = client.update_user(user_app_data.id, app_profile)
+
+                        if updated_user.is_active is None:
+                            updated_user.is_active = True if allow_enable else user_app_data.is_active
+
+                        user_profile.set_result(
+                            action=IAMActions.UPDATE_USER,
+                            active=updated_user.is_active,
+                            iden=updated_user.id,
+                            email=user_profile.get_attribute("email") or updated_user.email or user_app_data.email,
+                            username=updated_user.username,
+                            details=updated_user.full_data,
+                        )
+                    else:
+                        if self.create_if_not_exists:
+                            user_profile = self.create_user(client, args)
+                        else:
+                            _, error_message = IAMErrors.USER_DOES_NOT_EXIST
+                            user_profile.set_result(action=IAMActions.UPDATE_USER, skip=True, skip_reason=error_message)
+
+                except Exception as e:
+                    client.handle_exception(user_profile, e, IAMActions.UPDATE_USER)
+
+            return user_profile
+
+
+    def get_first_primary_email_by_scim_schema(res: Dict):
+        return next((email.get("value") for email in res.get("emails", []) if email.get("primary")), None)
+
+    register_module_line('IAMApiModule', 'end', __line__(), wrapper=1)
+    ### END GENERATED CODE ###
+
+    if __name__ in ("__main__", "__builtin__", "builtins"):
+        main()
+
+    register_module_line('Okta IAM', 'end', __line__())
+  subtype: python3
+  type: python
+sectionorder:
+- Connect
+- Collect
+system: true
