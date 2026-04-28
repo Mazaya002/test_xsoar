@@ -25,7 +25,7 @@ contentitemexportablefields:
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
-name: FailedInstances_copy
+name: Health_Check
 outputs:
 - contextPath: FailedInstances.instance
   description: The name of the failed integration instance.
