@@ -2,7 +2,7 @@
 	"allRead": true,
 	"allReadWrite": true,
 	"cacheVersn": 0,
-	"data": "[\r\n  \"halo\",\r\n  \"dek\",\r\n  \"test\",\r\n  \"a\",\r\n  \"b\",\r\n  \"c\",\r\n  \"d\",\r\n  \"e\",\r\n  \"f\",\r\n  \"g\",\r\n  \"h\",\r\n  \"abcd kek\",\r\n  \"terakhir\",\r\n  \"udah\",\r\n  \"udah udah\",\r\n  \"hehe\",\r\n  \"1\"\r\n]",
+	"data": "{\r\n  \"list\": [\r\n    \"halo\",\r\n    \"dek\",\r\n    \"test\",\r\n    \"a\",\r\n    \"b\",\r\n    \"c\",\r\n    \"d\",\r\n    \"e\",\r\n    \"f\",\r\n    \"g\",\r\n    \"h\",\r\n    \"abcd kek\",\r\n    \"terakhir\",\r\n    \"udah\",\r\n    \"udah udah\",\r\n    \"hehe\",\r\n    \"1\"\r\n  ]\r\n}",
 	"definitionId": "",
 	"description": "",
 	"detached": false,
