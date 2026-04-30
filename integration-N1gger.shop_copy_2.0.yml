@@ -153,6 +153,8 @@ script:
     name: sampleapi-get-products
   - arguments: []
     name: sampleapi-get-product
+  - arguments: []
+    name: fetch-incidents
   dockerimage: demisto/python3:3.10.12.63474
   isfetch: true
   runonce: false
