@@ -53,22 +53,17 @@ tasks:
     isoversize: false
     note: false
     quietmode: 0
-    scriptarguments:
-      includeDefault:
-        simple: "false"
     separatecontext: false
     skipunavailable: false
     task:
-      brand: ""
-      description: Executes a test for all integration instances available and returns
-        detailed information about succeeded and failed integration instances.
-      id: 228fdde9-77e3-4ba6-8c17-91f27766119b
-      iscommand: false
+      brand: N1gger.shop
+      id: 452e9e9c-d7f5-49cc-8ea0-e1e4b1bda31d
+      iscommand: true
       name: FailedInstances
-      script: FailedInstances
+      script: N1gger.shop|||sampleapi-get-products
       type: regular
       version: -1
-    taskid: 228fdde9-77e3-4ba6-8c17-91f27766119b
+    taskid: 452e9e9c-d7f5-49cc-8ea0-e1e4b1bda31d
     timertriggers: []
     type: regular
     view: |-
