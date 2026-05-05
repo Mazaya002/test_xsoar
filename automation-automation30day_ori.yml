@@ -21,7 +21,7 @@ dockerimage: demisto/python3:3.12.13.8428455
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
-name: automation30day_copy
+name: automation30day_ori
 pswd: ""
 runas: DBotWeakRole
 runonce: false
@@ -37,20 +37,17 @@ script: |-
 
   timezone = 'Asia/Jakarta'
 
-  def get_local_time(timezone):
-      utc_now = datetime.datetime.utcnow()
-      local_timezone = pytz.timezone(timezone)
-      local_time = utc_now.replace(tzinfo=pytz.utc).astimezone(local_timezone)
-      return local_time
-
-  today = get_local_time(timezone)
+  today = datetime.datetime.strptime(firstemaildate, '%d/%m/%Y')
   today_convert = today.strftime('%d/%m/%Y')
+
   print("Tanggal hari ini adalah: " + today_convert)
   print("Tanggal maksimum reminder adalah: " + maximumemaildate)
 
   if today_convert >= maximumemaildate:
+      print("breakloop: yes")
       demisto.executeCommand("setIncident", {"breakloop":"yes"})
   else:
+      print("breakloop: No")
       demisto.executeCommand("setIncident", {"breakloop":"no"})
 scripttarget: 0
 subtype: python3
