@@ -31,21 +31,12 @@ script: |-
   from datetime import timedelta
   import pytz
 
-  # Arguments from War Room
-  # Usage: !ScriptName firstemaildate="01/05/2026" maximumemaildate="31/05/2026"
   args = demisto.args()
   firstemaildate = args.get("firstemaildate")
   maximumemaildate = args.get("maximumemaildate")
 
-  # Validate inputs
-  if not firstemaildate:
-      return_error("Missing argument: firstemaildate (format: DD/MM/YYYY)")
-  if not maximumemaildate:
-      return_error("Missing argument: maximumemaildate (format: DD/MM/YYYY)")
-
   timezone = 'Asia/Jakarta'
 
-  # Get today's date in local timezone
   def get_local_time(timezone):
       utc_now = datetime.datetime.utcnow()
       local_timezone = pytz.timezone(timezone)
@@ -54,21 +45,13 @@ script: |-
 
   today = get_local_time(timezone)
   today_convert = today.strftime('%d/%m/%Y')
-
   print("Tanggal hari ini adalah: " + today_convert)
-  print("Tanggal pertama email adalah: " + firstemaildate)
   print("Tanggal maksimum reminder adalah: " + maximumemaildate)
 
-  # Compare dates properly using datetime objects (not string comparison)
-  today_dt = datetime.datetime.strptime(today_convert, '%d/%m/%Y')
-  maximum_dt = datetime.datetime.strptime(maximumemaildate, '%d/%m/%Y')
-
-  if today_dt >= maximum_dt:
-      print("Result: breakloop = yes")
-      demisto.executeCommand("setIncident", {"breakloop": "yes"})
+  if today_convert >= maximumemaildate:
+      demisto.executeCommand("setIncident", {"breakloop":"yes"})
   else:
-      print("Result: breakloop = no")
-      demisto.executeCommand("setIncident", {"breakloop": "no"})
+      demisto.executeCommand("setIncident", {"breakloop":"no"})
 scripttarget: 0
 subtype: python3
 tags: []
