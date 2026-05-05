@@ -21,7 +21,7 @@ dockerimage: demisto/python3:3.12.13.8428455
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
-name: automation30day_ori
+name: automation30day_with_input
 pswd: ""
 runas: DBotWeakRole
 runonce: false
@@ -42,6 +42,9 @@ script: |-
 
   print("Tanggal hari ini adalah: " + today_convert)
   print("Tanggal maksimum reminder adalah: " + maximumemaildate)
+
+  print(type(today_convert))
+  print(type(maximumemaildate))
 
   if today_convert >= maximumemaildate:
       print("breakloop: yes")
