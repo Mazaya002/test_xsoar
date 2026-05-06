@@ -72,7 +72,5 @@ scripttarget: 0
 subtype: python3
 tags:
 - transformer
-- test
-- halodek
-- inibuatansendiri
+- general
 type: python
