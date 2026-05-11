@@ -68,8 +68,8 @@ tasks:
     view: |-
       {
         "position": {
-          "x": 320,
-          "y": 450
+          "x": 380,
+          "y": 630
         }
       }
   "2":
@@ -80,7 +80,7 @@ tasks:
     isoversize: false
     nexttasks:
       '#none#':
-      - "1"
+      - "3"
     note: false
     quietmode: 0
     scriptarguments:
@@ -107,15 +107,50 @@ tasks:
           "y": 250
         }
       }
+  "3":
+    continueonerrortype: ""
+    id: "3"
+    ignoreworker: false
+    isautoswitchedtoquietmode: false
+    isoversize: false
+    nexttasks:
+      '#none#':
+      - "1"
+    note: false
+    quietmode: 0
+    scriptarguments:
+      value:
+        simple: test2
+    separatecontext: false
+    skipunavailable: false
+    task:
+      brand: ""
+      description: Prints text to war room (Markdown supported)
+      id: a7355af4-de5f-4993-87b8-8b43df6c11a3
+      iscommand: false
+      name: test ajah
+      script: Print
+      type: regular
+      version: -1
+    taskid: a7355af4-de5f-4993-87b8-8b43df6c11a3
+    timertriggers: []
+    type: regular
+    view: |-
+      {
+        "position": {
+          "x": 330,
+          "y": 430
+        }
+      }
 version: -1
 view: |-
   {
     "linkLabelsPosition": {},
     "paper": {
       "dimensions": {
-        "height": 465,
-        "width": 510,
-        "x": 320,
+        "height": 645,
+        "width": 500,
+        "x": 330,
         "y": 50
       }
     }
