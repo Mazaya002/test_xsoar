@@ -11,7 +11,7 @@ contentitemexportablefields:
     toServerVersion: ""
 id: 6b4b0439-9850-42d0-84e4-e39ccd8ac266
 inputs: []
-name: DSIS - SK - Playbook
+name: DSIS - SK - Playbook_v.1.1
 outputs: []
 quiet: true
 starttaskid: "0"
