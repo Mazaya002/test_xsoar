@@ -1,0 +1,325 @@
+category: Utilities
+commonfields:
+  id: Export Incidents
+  version: -1
+configuration:
+- additionalinfo: Reliability of the source providing the intelligence data.
+  defaultvalue: C - Fairly reliable
+  display: Source Reliability
+  name: integrationReliability
+  options:
+  - A+ - 3rd party enrichment
+  - A - Completely reliable
+  - B - Usually reliable
+  - C - Fairly reliable
+  - D - Not usually reliable
+  - E - Unreliable
+  - F - Reliability cannot be judged
+  required: false
+  section: Collect
+  type: 15
+- defaultvalue: https://api.xsoar-example.com
+  display: Server URL (e.g., https://api.xsoar-example.com)
+  name: url
+  required: true
+  section: Connect
+  type: 0
+- defaultvalue: "true"
+  display: ""
+  name: insecure
+  required: false
+  type: 8
+- defaultvalue: "false"
+  display: ""
+  name: proxy
+  required: false
+  type: 8
+contentitemexportablefields:
+  contentitemfields:
+    definitionid: ""
+    fromServerVersion: ""
+    itemVersion: ""
+    packID: ""
+    packName: ""
+    prevname: ""
+    propagationLabels: []
+    toServerVersion: ""
+description: This is the Export Incidents integration for getting started.
+detaileddescription: |-
+  ### Community Contributed Integration
+   #### Integration Author: Cortex XSOAR
+   No support or maintenance is provided by the author. Customers are encouraged to engage with the user community for questions and guidance at the [Cortex XSOAR Live Discussions](https://live.paloaltonetworks.com/t5/cortex-xsoar-discussions/bd-p/Cortex_XSOAR_Discussions).
+  ***
+  ## Hello World
+  - This section explains how to configure the instance of HelloWorld in Cortex XSOAR:
+  - You can use the following API Key: `dummy-key`
+
+
+  ---
+  [View Integration Documentation](https://xsoar.pan.dev/docs/reference/integrations/hello-world)
+display: Export Incidents
+image: data:image/png;base64,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
+name: Export Incidents
+script:
+  commands:
+  - arguments:
+    - name: start_time
+      required: true
+    - name: end_time
+      required: true
+    - name: page_size
+      required: true
+    name: xsoar-export-incidents
+  dockerimage: demisto/python3:3.12.8.3296088
+  runonce: false
+  script: |-
+    import urllib3
+    import requests
+    import pandas as pd
+    from io import StringIO
+    from datetime import datetime
+
+    from CommonServerPython import *
+    from CommonServerUserPython import *
+
+    urllib3.disable_warnings()
+
+    # =========================================
+    # CLIENT
+    # =========================================
+
+    class Client(BaseClient):
+
+        def export_incidents(
+            self,
+            start_time,
+            end_time,
+            page_size=500
+        ):
+
+            start_dt = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+            end_dt = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S")
+
+            from_date = start_dt.isoformat() + "Z"
+            to_date = end_dt.isoformat() + "Z"
+
+            all_incidents = []
+            page = 0
+
+            while True:
+
+                payload = {
+                    "filter": {
+                        "fromDate": from_date,
+                        "toDate": to_date,
+                        "page": page,
+                        "size": page_size,
+
+                        "fields": [
+                            "id",
+                            "name",
+                            "type",
+                            "severity",
+                            "status",
+                            "owner",
+                            "created",
+                            "modified",
+                            "closed",
+                            "playbookId",
+                            "playbookName",
+                            "investigationId"
+                        ],
+
+                        "sort": [
+                            {
+                                "field": "created",
+                                "asc": True
+                            }
+                        ]
+                    }
+                }
+
+                demisto.info(f"Fetching page {page}")
+
+                response = self._http_request(
+                    method="POST",
+                    url_suffix="/incidents/search",
+                    json_data=payload,
+                    resp_type="json"
+                )
+
+                incidents = response.get("data", [])
+
+                if not incidents:
+                    break
+
+                demisto.info(f"Retrieved {len(incidents)} incidents")
+
+                for inc in incidents:
+
+                    playbook_name = (
+                        inc.get("playbookName")
+                        or inc.get("playbook")
+                        or inc.get("playbookId")
+                    )
+
+                    all_incidents.append({
+                        "id": inc.get("id"),
+                        "name": inc.get("name"),
+                        "type": inc.get("type"),
+                        "severity": inc.get("severity"),
+                        "status": inc.get("status"),
+                        "owner": inc.get("owner"),
+                        "playbook": playbook_name,
+                        "playbookId": inc.get("playbookId"),
+                        "investigationId": inc.get("investigationId"),
+                        "created": inc.get("created"),
+                        "modified": inc.get("modified"),
+                        "closed": inc.get("closed")
+                    })
+
+                page += 1
+
+            return all_incidents
+
+
+    # =========================================
+    # COMMAND
+    # =========================================
+
+    def export_incidents_command(client, args):
+
+        start_time = args.get("start_time")
+        end_time = args.get("end_time")
+        page_size = int(args.get("page_size", 500))
+
+        if not start_time:
+            raise DemistoException("start_time is required")
+
+        if not end_time:
+            raise DemistoException("end_time is required")
+
+        incidents = client.export_incidents(
+            start_time=start_time,
+            end_time=end_time,
+            page_size=page_size
+        )
+
+        if not incidents:
+            return CommandResults(
+                readable_output="No incidents found."
+            )
+
+        df = pd.DataFrame(incidents)
+
+        filename = (
+            f"xsoar_incidents_"
+            f"{start_time[:10].replace('-', '')}"
+            f"_to_"
+            f"{end_time[:10].replace('-', '')}.csv"
+        )
+
+        csv_buffer = StringIO()
+        df.to_csv(csv_buffer, index=False)
+
+        readable_output = tableToMarkdown(
+            "Incident Export Summary",
+            [
+                {
+                    "Start Time": start_time,
+                    "End Time": end_time,
+                    "Total Incidents": len(df)
+                }
+            ]
+        )
+
+        return [
+            CommandResults(
+                readable_output=readable_output,
+                outputs_prefix="XSOAR.Export",
+                outputs={
+                    "TotalIncidents": len(df),
+                    "FileName": filename
+                }
+            ),
+            fileResult(
+                filename,
+                csv_buffer.getvalue()
+            )
+        ]
+
+
+    # =========================================
+    # TEST MODULE
+    # =========================================
+
+    def test_module(client):
+
+        payload = {
+            "size": 1
+        }
+
+        client._http_request(
+            method="POST",
+            url_suffix="/incidents/search",
+            json_data=payload,
+            resp_type="json"
+        )
+
+        return "ok"
+
+
+    # =========================================
+    # MAIN
+    # =========================================
+
+    def main():
+
+        params = demisto.params()
+
+        base_url = params.get("url", "").rstrip("/")
+        verify = not params.get("insecure", False)
+        proxy = params.get("proxy", False)
+
+        api_key = params.get("apikey")
+
+        headers = {
+            "Authorization": api_key,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+
+        client = Client(
+            base_url=base_url,
+            verify=verify,
+            proxy=proxy,
+            headers=headers
+        )
+
+        command = demisto.command()
+
+        demisto.info(f"Command being called is {command}")
+
+        try:
+
+            if command == "test-module":
+                results = test_module(client)
+                return_results(results)
+
+            elif command == "xsoar-export-incidents":
+                results = export_incidents_command(client, demisto.args())
+                return_results(results)
+
+            else:
+                raise NotImplementedError(f"Command {command} is not implemented.")
+
+        except Exception as e:
+            return_error(
+                f"Failed to execute command.\nError:\n{str(e)}"
+            )
+
+
+    if __name__ in ("__main__", "__builtin__", "builtins"):
+        main()
+  subtype: python3
+  type: python
