@@ -161,8 +161,6 @@ script:
     import traceback
     import csv
     import io
-    import os
-    import uuid
     from datetime import datetime
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -228,31 +226,6 @@ script:
         })
 
 
-    def file_result(filename, data):
-        """
-        Write data to XSOAR's temp file directory and return a file entry dict.
-        data can be bytes or str.
-        """
-        # XSOAR stores temp files in an env var or falls back to /tmp
-        tmp_dir = os.environ.get("DEMISTO_FILES_PATH", "/tmp")
-        file_id  = str(uuid.uuid4())
-        tmp_path = os.path.join(tmp_dir, file_id)
-
-        if isinstance(data, str):
-            data = data.encode("utf-8")
-
-        with open(tmp_path, "wb") as f:
-            f.write(data)
-
-        return {
-            "Type": 3,                  # entryTypes["file"]
-            "ContentsFormat": "text",
-            "Contents": "",
-            "File": filename,
-            "FileID": file_id,
-        }
-
-
     # =========================================
     # CLIENT
     # =========================================
@@ -266,10 +239,7 @@ script:
                 "Content-Type": "application/json",
             }
             self.verify_ssl = verify_ssl
-            if use_proxy:
-                self.proxies = None        # let requests pick up system proxy env vars
-            else:
-                self.proxies = {"http": "", "https": ""}
+            self.proxies = None if use_proxy else {"http": "", "https": ""}
 
         def search_page(self, from_date, to_date, page, size=PAGE_SIZE):
             payload = {
@@ -377,7 +347,6 @@ script:
 
 
     def cmd_export_incidents(client, args):
-        """Fetch incidents, write War Room table, return normalised rows."""
         start_time = args.get("start_time", "").strip()
         end_time   = args.get("end_time",   "").strip()
         if not start_time or not end_time:
@@ -402,7 +371,6 @@ script:
 
 
     def cmd_export_to_csv(client, args):
-        """Fetch incidents, write War Room table AND attach a CSV file."""
         rows = cmd_export_incidents(client, args)
         if not rows:
             return
@@ -410,19 +378,51 @@ script:
         start_time = args.get("start_time", "unknown").strip()
         end_time   = args.get("end_time",   "unknown").strip()
 
-        # Build CSV
+        # Build CSV in memory
         buf = io.StringIO()
         writer = csv.DictWriter(buf, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
-        csv_bytes = buf.getvalue().encode("utf-8")
+        csv_text = buf.getvalue()
 
-        # Filename
+        # Filename for display
         start_tag = start_time.replace(" ", "-").replace(":", "")
         end_tag   = end_time.replace(" ", "-").replace(":", "")
         filename  = f"xsoar_incidents_{start_tag}_to_{end_tag}.csv"
 
-        demisto.results(file_result(filename, csv_bytes))
+        # Write to XSOAR investigation storage via the internal API
+        inv_id = demisto.investigation().get("id", "")
+        server_url = demisto.demistoUrls().get("server", "")
+
+        upload_resp = requests.post(
+            f"{server_url}/entry/upload/{inv_id}",
+            headers={"Authorization": demisto.getLicenseID()},
+            files={"file": (filename, csv_text.encode("utf-8"), "text/csv")},
+            verify=False,
+            timeout=60,
+        )
+
+        if upload_resp.status_code == 200:
+            # Upload succeeded — XSOAR created the file entry itself
+            demisto.results({
+                "Type": 1,
+                "ContentsFormat": "text",
+                "Contents": f"CSV file **{filename}** ({len(rows)} rows) uploaded successfully.",
+                "HumanReadable": f"CSV file **{filename}** ({len(rows)} rows) uploaded successfully.",
+            })
+        else:
+            # Fallback: return CSV as plain-text note so data is never lost
+            demisto.results({
+                "Type": 1,
+                "ContentsFormat": "text",
+                "Contents": csv_text,
+                "HumanReadable": (
+                    f"### {filename}\n\n"
+                    f"_(File upload failed — CSV content below. Copy and save as `{filename}`.)_\n\n"
+                    f"```\n{csv_text[:50000]}\n```"
+                    + ("\n\n_(truncated — full data in Contents field)_" if len(csv_text) > 50000 else "")
+                ),
+            })
 
 
     # =========================================
