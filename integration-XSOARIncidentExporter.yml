@@ -153,7 +153,7 @@ script:
     - contextPath: XSOARExport.Incident.Closed
       description: Incident closure timestamp (ISO 8601), empty if still open.
       type: Date
-  dockerimage: demisto/python3:3.10.13.86272
+  dockerimage: docker.io/demisto/python3:3.12.13.8927230
   runonce: false
   script: |-
     import requests
