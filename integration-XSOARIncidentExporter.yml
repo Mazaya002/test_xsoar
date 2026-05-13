@@ -190,6 +190,51 @@ script:
 
 
     # =========================================
+    # HELPERS
+    # =========================================
+
+    def return_error(msg):
+        demisto.results({
+            "Type": 4,                  # entryTypes["error"]
+            "ContentsFormat": "text",
+            "Contents": msg,
+        })
+        raise SystemExit(0)
+
+
+    def return_ok(human_readable, context=None, raw=None):
+        entry = {
+            "Type": 1,                  # entryTypes["note"]
+            "ContentsFormat": "json" if raw is not None else "text",
+            "Contents": raw if raw is not None else human_readable,
+            "HumanReadable": human_readable,
+        }
+        if context:
+            entry["EntryContext"] = context
+        demisto.results(entry)
+
+
+    def table_to_markdown(title, rows, headers):
+        lines = [f"### {title}", ""]
+        lines.append("| " + " | ".join(headers) + " |")
+        lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+        for row in rows:
+            lines.append("| " + " | ".join(str(row.get(h, "")) for h in headers) + " |")
+        return "\n".join(lines)
+
+
+    def parse_dt(dt_str):
+        return datetime.strptime(dt_str.strip(), DATE_FORMAT).isoformat() + "Z"
+
+
+    def get_proxy():
+        proxy_url = demisto.params().get("proxy_url") or ""
+        if proxy_url:
+            return {"http": proxy_url, "https": proxy_url}
+        return {"http": "", "https": ""}
+
+
+    # =========================================
     # CLIENT
     # =========================================
 
@@ -202,9 +247,9 @@ script:
                 "Content-Type": "application/json",
             }
             self.verify_ssl = verify_ssl
-            self.proxies = handle_proxy() if use_proxy else {"http": "", "https": ""}
+            self.proxies = get_proxy() if use_proxy else {"http": "", "https": ""}
 
-        def search_incidents_page(self, from_date, to_date, page, size=PAGE_SIZE):
+        def search_page(self, from_date, to_date, page, size=PAGE_SIZE):
             payload = {
                 "filter": {
                     "fromDate": from_date,
@@ -228,45 +273,39 @@ script:
                 timeout=120,
             )
             if resp.status_code != 200:
-                raise Exception(f"XSOAR API error HTTP {resp.status_code}: {resp.text[:500]}")
+                raise Exception(f"HTTP {resp.status_code}: {resp.text[:500]}")
             return resp.json()
 
-        def fetch_all_incidents(self, from_date, to_date):
-            all_incidents = []
+        def fetch_all(self, from_date, to_date):
+            results = []
             page = 0
             while True:
-                data = self.search_incidents_page(from_date, to_date, page)
-                incidents = data.get("data") or []
-                if not incidents:
+                data = self.search_page(from_date, to_date, page)
+                batch = data.get("data") or []
+                if not batch:
                     break
-                all_incidents.extend(incidents)
+                results.extend(batch)
                 page += 1
-            return all_incidents
+            return results
 
 
-    # =========================================
-    # HELPERS
-    # =========================================
-
-    def parse_dt(dt_str):
-        return datetime.strptime(dt_str.strip(), DATE_FORMAT).isoformat() + "Z"
-
-
-    def normalize_incident(inc):
-        playbook_name = (
+    def normalize(inc):
+        playbook = (
             inc.get("playbookName")
             or inc.get("playbook")
             or inc.get("playbookId")
             or ""
         )
+        sev = inc.get("severity", 0)
+        sta = inc.get("status", 0)
         return {
             "ID":              inc.get("id", ""),
             "Name":            inc.get("name", ""),
             "Type":            inc.get("type", ""),
-            "Severity":        SEVERITY_MAP.get(inc.get("severity", 0), str(inc.get("severity", 0))),
-            "Status":          STATUS_MAP.get(inc.get("status", 0), str(inc.get("status", 0))),
+            "Severity":        SEVERITY_MAP.get(sev, str(sev)),
+            "Status":          STATUS_MAP.get(sta, str(sta)),
             "Owner":           inc.get("owner", ""),
-            "Playbook":        playbook_name,
+            "Playbook":        playbook,
             "PlaybookID":      inc.get("playbookId", ""),
             "InvestigationID": inc.get("investigationId", ""),
             "Created":         inc.get("created", ""),
@@ -281,37 +320,23 @@ script:
         creds = params.get("credentials") or {}
         api_key = creds.get("password") or params.get("api_key", "")
         if not api_key:
-            raise Exception("API Key is required. Set it in the integration configuration.")
+            raise Exception("API Key is required.")
         verify_ssl = not params.get("insecure", False)
-        use_proxy = params.get("proxy", False)
+        use_proxy  = params.get("proxy", False)
         return Client(base_url, api_key, verify_ssl, use_proxy)
-
-
-    def dict_list_to_markdown_table(title, rows, headers):
-        """Minimal tableToMarkdown fallback — safe if CommonServerPython didn't load."""
-        if not rows:
-            return f"**{title}**\n\nNo results."
-        lines = [f"### {title}", ""]
-        lines.append("|" + "|".join(headers) + "|")
-        lines.append("|" + "|".join(["---"] * len(headers)) + "|")
-        for row in rows:
-            lines.append("|" + "|".join(str(row.get(h, "")) for h in headers) + "|")
-        return "\n".join(lines)
 
 
     # =========================================
     # COMMANDS
     # =========================================
 
-    def test_module_command(client):
-        now = datetime.utcnow()
-        today = now.strftime("%Y-%m-%d")
+    def cmd_test_module(client):
+        now = datetime.utcnow().strftime("%Y-%m-%d")
         payload = {
             "filter": {
-                "fromDate": today + "T00:00:00Z",
-                "toDate":   today + "T23:59:59Z",
-                "page": 0,
-                "size": 1,
+                "fromDate": now + "T00:00:00Z",
+                "toDate":   now + "T23:59:59Z",
+                "page": 0, "size": 1,
                 "fields": ["id"],
             }
         }
@@ -326,73 +351,41 @@ script:
         if resp.status_code == 200:
             demisto.results("ok")
         else:
-            demisto.results(f"Connection failed — HTTP {resp.status_code}: {resp.text[:300]}")
+            demisto.results(f"Error: HTTP {resp.status_code} — {resp.text[:300]}")
 
 
-    def export_incidents_command(client, args):
+    def cmd_export_incidents(client, args):
         start_time = args.get("start_time", "").strip()
         end_time   = args.get("end_time", "").strip()
-
         if not start_time or not end_time:
-            raise Exception("Both 'start_time' and 'end_time' arguments are required.")
+            raise Exception("Both 'start_time' and 'end_time' are required.")
 
         from_date = parse_dt(start_time)
         to_date   = parse_dt(end_time)
-
-        raw = client.fetch_all_incidents(from_date, to_date)
-        rows = [normalize_incident(i) for i in raw]
+        raw  = client.fetch_all(from_date, to_date)
+        rows = [normalize(i) for i in raw]
 
         if not rows:
-            demisto.results({
-                "Type": entryTypes["note"],
-                "ContentsFormat": formats["markdown"],
-                "Contents": f"No incidents found between **{start_time}** and **{end_time}**.",
-                "HumanReadable": f"No incidents found between **{start_time}** and **{end_time}**.",
-            })
-            return
+            return_ok(f"No incidents found between {start_time} and {end_time}.")
+            return rows
 
         headers = ["ID", "Name", "Type", "Severity", "Status",
                    "Owner", "Playbook", "InvestigationID", "Created", "Closed"]
-
-        try:
-            md = tableToMarkdown(
-                f"XSOAR Incidents | {start_time} to {end_time} | {len(rows)} total",
-                rows,
-                headers=headers,
-                removeNull=True,
-            )
-        except Exception:
-            md = dict_list_to_markdown_table(
-                f"XSOAR Incidents | {start_time} to {end_time} | {len(rows)} total",
-                rows,
-                headers,
-            )
-
-        ec = {"XSOARExport": {"Incident": rows}}
-
-        demisto.results({
-            "Type": entryTypes["note"],
-            "ContentsFormat": formats["json"],
-            "Contents": raw,
-            "HumanReadable": md,
-            "EntryContext": ec,
-        })
+        md = table_to_markdown(
+            f"XSOAR Incidents | {start_time} to {end_time} | {len(rows)} total",
+            rows, headers,
+        )
+        return_ok(md, context={"XSOARExport.Incident(val.ID==obj.ID)": rows}, raw=raw)
+        return rows
 
 
-    def export_incidents_to_csv_command(client, args):
-        # Run the standard export first (writes War Room entry)
-        export_incidents_command(client, args)
-
-        start_time = args.get("start_time", "").strip()
-        end_time   = args.get("end_time", "").strip()
-        from_date  = parse_dt(start_time)
-        to_date    = parse_dt(end_time)
-
-        raw  = client.fetch_all_incidents(from_date, to_date)
-        rows = [normalize_incident(i) for i in raw]
-
+    def cmd_export_to_csv(client, args):
+        rows = cmd_export_incidents(client, args)
         if not rows:
             return
+
+        start_time = args.get("start_time", "unknown").strip()
+        end_time   = args.get("end_time", "unknown").strip()
 
         buf = io.StringIO()
         writer = csv.DictWriter(buf, fieldnames=list(rows[0].keys()))
@@ -403,7 +396,16 @@ script:
         end_tag   = end_time.replace(" ", "_").replace(":", "")[:15]
         filename  = f"xsoar_incidents_{start_tag}_to_{end_tag}.csv"
 
-        demisto.results(fileResult(filename, buf.getvalue().encode("utf-8")))
+        content = buf.getvalue().encode("utf-8")
+        demisto.results({
+            "Type": 3,                  # entryTypes["file"]
+            "ContentsFormat": "text",
+            "Contents": filename,
+            "File": filename,
+            "FileID": demisto.uniqueFile(),
+            "FileMetadata": {"info": "csv"},
+        })
+        demisto.results(demisto.fileResult(filename, content))
 
 
     # =========================================
@@ -412,25 +414,25 @@ script:
 
     def main():
         command = demisto.command()
-
         try:
             client = build_client()
-
             if command == "test-module":
-                test_module_command(client)
-
+                cmd_test_module(client)
             elif command == "xsoar-export-incidents":
-                export_incidents_command(client, demisto.args())
-
+                cmd_export_incidents(client, demisto.args())
             elif command == "xsoar-export-incidents-to-csv":
-                export_incidents_to_csv_command(client, demisto.args())
-
+                cmd_export_to_csv(client, demisto.args())
             else:
-                raise NotImplementedError(f"Command '{command}' is not implemented.")
-
+                raise NotImplementedError(f"Command not implemented: {command}")
+        except SystemExit:
+            pass
         except Exception as e:
             demisto.error(traceback.format_exc())
-            return_error(f"XSOARIncidentExporter error on '{command}': {str(e)}")
+            demisto.results({
+                "Type": 4,
+                "ContentsFormat": "text",
+                "Contents": f"XSOARIncidentExporter error on '{command}': {str(e)}",
+            })
 
 
     if __name__ in ("__main__", "__builtin__", "builtins"):
